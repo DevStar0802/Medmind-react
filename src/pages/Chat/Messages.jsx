@@ -17,8 +17,8 @@ const Messages = ({ messages }) => {
         // overflowY="scroll"
         flexDirection="column"
         p="1"
-        minH={"79vh"}
-        maxH={"79vh"}
+        minH={"76vh"}
+        maxH={"76vh"}
         bg={backgroundColor}
       >
         {React.Children.toArray(

@@ -23,9 +23,9 @@ function App() {
         <Link onClick={() => navigate("/searchPage")} color="white">
           Search Page
         </Link>
-        <Link onClick={() => navigate("/searchDetail")} color="white">
+        {/* <Link onClick={() => navigate("/searchDetail")} color="white">
           Search Detail
-        </Link>
+        </Link> */}
       </Flex>
       <Routes>
         <Route path="/*" element={<MainPage />} />
