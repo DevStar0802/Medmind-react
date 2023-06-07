@@ -50,7 +50,7 @@ export const hitChatGpt = async (messageArray, setMessages) => {
     }
 
     try {
-      let decodedValue = JSON.parse(textDecoder.decode(value).replace(/\\/g, '').replace(/""/g, '').replace(/"\\n"/g, '').replace("data:", ""));
+      let decodedValue = JSON.parse(textDecoder.decode(value).replace("data:", ""));
       let updatedMessageArray = [...newMessageArray];
       updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue.choices[0].delta.content;
       console.log(updatedMessageArray)
