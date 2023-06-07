@@ -32,22 +32,11 @@ const MainPage = () => {
     const data = newMessage;
     let callMsgs = [{ role: "user", content: data }];
     setTimeout(async () => {
-      let response = await hitChatGpt(callMsgs);
-      response.json().then((data) => {
-        // setIsTyping(false);
-        const choices = data.choices;
-        let responses = [...callMsgs];
-        choices.forEach((choice) => {
-          responses.push({
-            role: "assistant",
-            content: choice.message.content,
-          });
-        });
-        setMessages([...responses]);
-        setFirstPageLoading(false);
-      });
-    }, 0);
-  };
+      // callMsgs.push({"assistant": "hello"})
+      // setMessages(callMsgs)
+      hitChatGpt(callMsgs, setMessages);
+      setFirstPageLoading(false);
+  })};
   return (
     <>
       {firstRun && (

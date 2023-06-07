@@ -12,11 +12,9 @@ myHeaders.append(
   "Bearer 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"
 );
 
-export const hitChatGpt = async (message) => {
+export const hitChatGpt = async (messageArray, setMessages) => {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    // mode: "cors", // no-cors, *cors, same-origin
-    // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    method: "POST",
     headers: myHeaders,
     body: JSON.stringify({
       model: MODEL,
@@ -24,11 +22,40 @@ export const hitChatGpt = async (message) => {
       temperature: TEMPERATURE,
       top_p: TOP_P,
       n: N,
-      stream: false,
+      stream: true,
       presence_penalty: 0,
       frequency_penalty: 0,
-      messages: message,
+      messages: messageArray,
     }),
   });
-  return response;
+
+  const content_message = {
+    role: "assistant",
+    content: "",
+  };
+
+  let newMessageArray = [...messageArray]
+  newMessageArray.push(content_message);
+  setMessages(newMessageArray);
+
+  const textDecoder = new TextDecoder();
+  const reader = response.body.getReader();
+
+  const pump = async () => {
+    const { done, value } = await reader.read();
+
+    if (done) {
+      // The stream is finished, return to exit the function
+      return;
+    }
+
+    let decodedValue = textDecoder.decode(value);
+    let updatedMessageArray = [...newMessageArray];
+    updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue;
+
+    setMessages(updatedMessageArray);
+    pump(); // Call pump again to keep reading the stream
+  };
+
+  pump(); // Start the stream processing
 };

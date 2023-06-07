@@ -21,6 +21,7 @@ const Messages = ({ messages }) => {
         maxH={"76vh"}
         bg={backgroundColor}
       >
+        {console.log(`The message are ${JSON.stringify(messages)}`)}
         {React.Children.toArray(
           messages.map((item, index) => {
             if (index < 2) return null;
