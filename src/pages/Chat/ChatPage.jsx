@@ -46,21 +46,6 @@ const ChatPage = ({ initialMessage, messagesProp }) => {
     setMessages([...callMsgs, { role: "typing", content: "" }]);
     setTimeout(async () => {
     hitChatGpt(callMsgs, setMessages);
-
-      // response.json().then((data) => {
-      //   const choices = data.choices;
-      //   let responses = [];
-      //   choices.forEach((choice) => {
-      //     responses.push({
-      //       role: "assistant",
-      //       content: choice.message.content,
-      //     });
-      //   });
-      //   setMessages((old) => [
-      //     ...old.filter((element) => element.role !== "typing"),
-      //     ...responses,
-      //   ]);
-      // });
     }, 0);
   };
   return (

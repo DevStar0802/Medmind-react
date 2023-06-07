@@ -32,8 +32,6 @@ const MainPage = () => {
     const data = newMessage;
     let callMsgs = [{ role: "user", content: data }];
     setTimeout(async () => {
-      // callMsgs.push({"assistant": "hello"})
-      // setMessages(callMsgs)
       hitChatGpt(callMsgs, setMessages);
       setFirstPageLoading(false);
   })};

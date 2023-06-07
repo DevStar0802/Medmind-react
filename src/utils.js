@@ -49,11 +49,16 @@ export const hitChatGpt = async (messageArray, setMessages) => {
       return;
     }
 
-    let decodedValue = textDecoder.decode(value);
-    let updatedMessageArray = [...newMessageArray];
-    updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue;
+    try {
+      let decodedValue = JSON.parse(textDecoder.decode(value).replace(/\\/g, '').replace(/""/g, '').replace(/"\\n"/g, '').replace("data:", ""));
+      let updatedMessageArray = [...newMessageArray];
+      updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue.choices[0].delta.content;
+      console.log(updatedMessageArray)
+      setMessages(updatedMessageArray);
+    } catch(exception){
+      console.error(exception);
+    }
 
-    setMessages(updatedMessageArray);
     pump(); // Call pump again to keep reading the stream
   };
 
