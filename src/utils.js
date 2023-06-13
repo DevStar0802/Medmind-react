@@ -31,7 +31,7 @@ export const hitChatGpt = async (messageArray, setMessages) => {
     }
 
     try {
-      let decodedValue = JSON.parse(textDecoder.decode(value).replace("data:", ""));
+      let decodedValue = textDecoder.decode(value);
       let updatedMessageArray = [...newMessageArray]
       updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue;
       setMessages(updatedMessageArray);
