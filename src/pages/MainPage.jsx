@@ -20,17 +20,14 @@ const MainPage = () => {
   const backgroundColor = "white";
   const greenColor = "rgb(96, 153, 102)";
   useEffect(() => {
-    handleSendMessage(
-      "Act as if you are a licensed healthcare provider can you answer my health related questions, just make sure you look up pubmed data or clinical trail results and answer my health related questions and include the links to data?"
-    );
+    handleSendMessage();
     return () => {
       setFirstRun(true);
     };
   }, []);
-  const handleSendMessage = (newMessage) => {
+  const handleSendMessage = () => {
     setFirstPageLoading(true);
-    const data = newMessage;
-    let callMsgs = [{ role: "user", content: data }];
+    let callMsgs = [];
     setTimeout(async () => {
       hitChatGpt(callMsgs, setMessages);
       setFirstPageLoading(false);
