@@ -51,6 +51,7 @@ const Messages = ({ messages }) => {
                         fontWeight={"bold"}
                         justify="start"
                         maxW={["29vh", "50vh"]}
+                        whiteSpace={"pre-wrap"}
                       >
                         {item.content}
                       </Text>
@@ -79,7 +80,7 @@ const Messages = ({ messages }) => {
                       {item.role === "typing" ? (
                         <BeatLoader />
                       ) : (
-                        <Text fontWeight={"bold"} maxW={["29vh", "50vh"]}>
+                        <Text fontWeight={"bold"} maxW={["29vh", "50vh"]} whiteSpace={"pre-wrap"}>
                           {item.content}
                         </Text>
                       )}
