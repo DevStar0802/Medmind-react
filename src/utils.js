@@ -2,7 +2,7 @@ var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
 export const hitChatGpt = async (messageArray, setMessages) => {
-  const response = await fetch("https://us-central1-medmind-6f2a3.cloudfunctions.net/streamOpenAIResponse", {
+  const response = await fetch("https://openai-service-ur2rlqmbdq-ue.a.run.app", {
     method: "POST",
     headers: myHeaders,
     body: JSON.stringify({
