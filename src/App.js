@@ -17,6 +17,7 @@ function App() {
         bg={headerColor}
         boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
       >
+        <Text color="white">MEDMIND</Text>
         <Link onClick={() => navigate("/")} size="20px" color="white">
           Chat Page
         </Link>

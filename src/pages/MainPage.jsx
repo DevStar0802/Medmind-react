@@ -25,9 +25,11 @@ const MainPage = () => {
       setFirstRun(true);
     };
   }, []);
-  const handleSendMessage = () => {
+  const handleSendMessage = (message) => {
+    if (message = null)
+      return;
     setFirstPageLoading(true);
-    let callMsgs = [];
+    let callMsgs = [...messages, {role: "user", content:"message"}];
     setTimeout(async () => {
       hitChatGpt(callMsgs, setMessages);
       setFirstPageLoading(false);
