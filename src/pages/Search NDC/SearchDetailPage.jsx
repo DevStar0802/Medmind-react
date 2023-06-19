@@ -1,20 +1,12 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Center,
   Flex,
   HStack,
   Heading,
   Image,
-  ListItem,
-  Radio,
   Text,
-  UnorderedList,
   VStack,
-  useRadioGroup,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +27,7 @@ const SearchDetailPage = () => {
   useEffect(() => {
     pricesArray.map((item) => {
       if (item.end_package_size.toString() === quantity) {
-        setPrice(item.total_price);
+        setPrice(item.base_price);
       }
     });
   }, [quantity]);

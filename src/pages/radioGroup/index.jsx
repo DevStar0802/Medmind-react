@@ -1,4 +1,4 @@
-import { Box, HStack, useRadio, useRadioGroup } from "@chakra-ui/react";
+import { HStack, useRadioGroup } from "@chakra-ui/react";
 import React from "react";
 import RadioCard from "./radio-card";
 
