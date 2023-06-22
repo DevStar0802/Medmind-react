@@ -92,9 +92,6 @@ const Messages = ({ messages }) => {
           })
         )}
       </Flex>
-      <Flex justify="center">
-        <AlwaysScrollToBottom />
-      </Flex>
     </>
   );
 };

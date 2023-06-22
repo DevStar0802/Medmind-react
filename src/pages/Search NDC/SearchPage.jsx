@@ -43,7 +43,7 @@ const SearchPage = () => {
   const handelSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
-    let ndc = form.formBasicEmail.value;
+    let ndc = form.formBasicEmail.value.trim();
 
     if (ndc.includes("-")) {
       let splittedVal = ndc.split("-");
