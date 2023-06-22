@@ -12,18 +12,22 @@ function App() {
   return (
     <>
       <Flex
-        p="20px"
+        pt="15px"
+        pl="10px"
         justify="start"
         gap={7}
         bg={headerColor}
         boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
       >
-        <Text color="white">MEDMIND</Text>
+        <Text color="white" size="20px">MEDMIND</Text>
         <Link onClick={() => navigate("/")} size="20px" color="white">
           Chat Page
         </Link>
         <Link onClick={() => navigate("/searchPage")} color="white">
           Search Page
+        </Link>
+        <Link onClick={() => navigate("/aboutPage")} color="white">
+          About Page
         </Link>
       </Flex>
     </>

@@ -91,6 +91,17 @@ const MainPage = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            <Text align={"center"} width={"30rem"} fontSize={"2rem"} fontWeight={"bold"} paddingTop={"2rem"}>
+            Welcome to Medmind
+
+
+            </Text>
+            <Text align={"center"} width={"30rem"} fontSize={"1.2rem"}>
+                          
+            Your Trusted Health Chat AI
+            At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
+
+            </Text>
           </VStack>
           <Flex
             borderRadius="10px"
