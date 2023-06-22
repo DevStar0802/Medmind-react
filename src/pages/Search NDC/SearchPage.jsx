@@ -101,7 +101,7 @@ const SearchPage = () => {
         {product && product.length > 0 ? (
           <>
             {product
-              .filter((finalNDC) => finalNDC.ndc === matchNdc)
+              // .filter((finalNDC) => finalNDC.ndc === matchNdc)
               .map((item, index) => {
                 return (
                   <Box

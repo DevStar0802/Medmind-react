@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import SearchPage from "./pages/Search NDC/SearchPage";
 import { Flex, Link, Text } from "@chakra-ui/react";
 import SearchDetailPage from "./pages/Search NDC/SearchDetailPage";
+import PrivateRoutes from "./routes/PrivateRoutes";
 
 function App() {
   const navigate = useNavigate();
@@ -24,15 +25,7 @@ function App() {
         <Link onClick={() => navigate("/searchPage")} color="white">
           Search Page
         </Link>
-        {/* <Link onClick={() => navigate("/searchDetail")} color="white">
-          Search Detail
-        </Link> */}
       </Flex>
-      <Routes>
-        <Route path="/*" element={<MainPage />} />
-        <Route path="/searchPage" element={<SearchPage />} />
-        <Route path="/searchDetail" element={<SearchDetailPage />} />
-      </Routes>
     </>
   );
 }

@@ -280,7 +280,7 @@ const SearchDetailPage = () => {
                       </InputGroup>
 
                       {alert && (
-                        <Alert status="error" color="red">
+                        <Alert status="error" color="red" borderRadius="7px">
                           <AlertIcon />
                           Package size must be between {minPackSize}-
                           {maxPackSize}
