@@ -1,10 +1,15 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Flex,
   HStack,
   Heading,
   Image,
+  Input,
+  InputGroup,
+  InputRightElement,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -20,18 +25,51 @@ const SearchDetailPage = () => {
   const strengthOptions = [location.state.strengthName];
   const [pricesArray, setPricesArray] = useState(location.state.pricesName);
   const [quantity, setQuantity] = useState("");
+  const [otherPackSizes, setOtherPackSizes] = useState("");
   const [price, setPrice] = useState("");
+  const [otherQuantity, setOtherQuantity] = useState();
+  const [otherInput, setOtherInput] = useState(false);
+  const [alert, setAlert] = useState(false);
   useEffect(() => {
-    setQuantity(pricesArray[0].end_package_size.toString());
+    setQuantity(pricesArray[0].units_included_in_base_price.toString());
   }, [pricesArray]);
+
   useEffect(() => {
     pricesArray.map((item) => {
-      if (item.end_package_size.toString() === quantity) {
+      if (item.units_included_in_base_price.toString() === quantity) {
         setPrice(item.base_price);
       }
     });
   }, [quantity]);
+  const minPackSize = pricesArray[0].end_package_size;
+  const maxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
 
+  const handleOtherButtonInput = () => {
+    pricesArray.map((item) => {
+      if (otherPackSizes < minPackSize || otherPackSizes > maxPackSize) {
+        setAlert(true);
+      } else {
+        setAlert(false);
+        setOtherInput(false);
+        setQuantity(otherPackSizes);
+        if (otherPackSizes == item.units_included_in_base_price) {
+          setPrice(item.base_price);
+        } else if (
+          otherPackSizes >= item.start_package_size &&
+          otherPackSizes <= item.end_package_size
+        ) {
+          const packDifference =
+            otherPackSizes - item.units_included_in_base_price;
+          let otherPrice =
+            packDifference * item.additional_price_per_unit_after_base;
+          let finalOtherPrice =
+            Math.round(item.base_price) + Math.ceil(otherPrice);
+          const finalPrice = Math.round(finalOtherPrice);
+          setPrice(`${finalPrice}.00`);
+        }
+      }
+    });
+  };
   return (
     <>
       <Box>
@@ -194,15 +232,62 @@ const SearchDetailPage = () => {
                 <Text>Quantity</Text>
                 <HStack gap={2}>
                   <RadioGroup
-                    options={pricesArray.map((item) =>
-                      item.end_package_size.toString()
-                    )}
+                    options={pricesArray
+                      .filter(
+                        (value, index, array) =>
+                          array.findIndex(
+                            (item) =>
+                              item.units_included_in_base_price ===
+                              value.units_included_in_base_price
+                          ) === index
+                      )
+                      .map((item) =>
+                        item.units_included_in_base_price.toString()
+                      )}
                     name="Quantity"
-                    defaultValue={pricesArray[0].end_package_size.toString()}
+                    defaultValue={pricesArray[0].units_included_in_base_price.toString()}
                     onChange={(value) => {
                       setQuantity(value);
                     }}
                   />
+                </HStack>
+                <HStack>
+                  {!otherInput && (
+                    <Button onClick={() => setOtherInput(true)}>others</Button>
+                  )}
+                  {otherInput && (
+                    <VStack>
+                      <InputGroup>
+                        <Input
+                          pr="4.5rem"
+                          type="text"
+                          placeholder={`From ${minPackSize} - ${maxPackSize}`}
+                          borderColor="#7fa8d4"
+                          value={otherPackSizes}
+                          onChange={(e) => {
+                            setOtherPackSizes(e.target.value);
+                          }}
+                        />
+                        <InputRightElement width="3.5rem">
+                          <Box
+                            cursor="pointer"
+                            color="#7fa8d4"
+                            onClick={() => handleOtherButtonInput()}
+                          >
+                            Done
+                          </Box>
+                        </InputRightElement>
+                      </InputGroup>
+
+                      {alert && (
+                        <Alert status="error" color="red">
+                          <AlertIcon />
+                          Package size must be between {minPackSize}-
+                          {maxPackSize}
+                        </Alert>
+                      )}
+                    </VStack>
+                  )}
                 </HStack>
               </VStack>
             </VStack>
