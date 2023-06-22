@@ -6,6 +6,7 @@ export const hitChatGpt = async (messageArray, setMessages) => {
     // 1. Do server-side rendering so that we don't expose our endpoiint 
     // 2. IP blacklisting from cloud run
     const response = await fetch("https://openai-service-ur2rlqmbdq-ue.a.run.app/generate_response", {
+
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
