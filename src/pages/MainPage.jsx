@@ -93,11 +93,10 @@ const MainPage = () => {
             </InputGroup>
             <Text align={"center"} width={"20rem"} fontSize={"1.2rem"}>
                           
-            Your Trusted Health Chat AI
-            At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
 
             </Text>
           </VStack>
+          <VStack>
           <Flex
             borderRadius="10px"
             direction={"column"}
@@ -123,6 +122,23 @@ const MainPage = () => {
               AI health chat app is solely at your own risk.
             </Text>
           </Flex>
+          <Flex
+            borderRadius="10px"
+            direction={"column"}
+            maxW={"90%"}
+            bg="gray.100"
+            h="max-content"
+            p="10px"
+            mb="10px"
+          >
+            <Heading align="center" fontSize="20px" color="gray.600">
+            Our Pledge to Personalized Care
+            </Heading>
+            <Text color="gray.500" px="10px" textAlign={"center"}>
+              At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
+            </Text>
+          </Flex>
+          </VStack>
         </VStack>
       )}
       {!firstRun && (
