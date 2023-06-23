@@ -71,7 +71,7 @@ const AboutPage = () => {
                 </Heading>
 
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Accessibility
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
@@ -79,7 +79,7 @@ const AboutPage = () => {
                     </Text>
                 </Box>
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Personalized Support
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
@@ -87,7 +87,7 @@ const AboutPage = () => {
                     </Text>
                 </Box>
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Reliable Information
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
@@ -95,7 +95,7 @@ const AboutPage = () => {
                     </Text>
                 </Box>
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Empowering Self-Care
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
@@ -103,7 +103,7 @@ const AboutPage = () => {
                     </Text>
                 </Box>
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Continuous Improvement
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
@@ -111,7 +111,7 @@ const AboutPage = () => {
                     </Text>
                 </Box>
                 <Box mt={5}>
-                    <Heading as="h4" size="md">
+                    <Heading as="h4" size="md" textAlign={"center"}>
                         Join Us on Your Health Journey
                     </Heading>
                     <Text fontSize="md" textAlign={"center"}>
