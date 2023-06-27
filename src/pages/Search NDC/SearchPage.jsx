@@ -181,94 +181,62 @@ const SearchPage = () => {
           bg="white"
           p={5}
         >
-          <Heading as="h1" size="xl" textAlign="center">
-            Welcome to Medmind
-          </Heading>
+          <Flex bg="gray.100" p={4} borderRadius="md" flexDirection="column">
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
 
-          <Text fontSize="md" textAlign={"center"}>
-            At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
-          </Text>
-
-          <Heading as="h2" size="lg" textAlign={"center"}>
-            Who We Are
-          </Heading>
-
-          <Text fontSize="md" textAlign={"center"}>
-            Medmind is a revolutionary health chat AI platform that combines the expertise of medical professionals with the intelligence of state-of-the-art natural language processing algorithms. Our team consists of passionate healthcare experts, data scientists, and software engineers who are dedicated to transforming the way people interact with healthcare information and services.
-          </Text>
-
-          <Heading as="h2" size="lg" textAlign={"center"}>
-            What we do
-          </Heading>
-
-          <Text fontSize="md" textAlign={"center"}>
-            We provide an intelligent and intuitive chatbot interface that serves as a virtual healthcare companion, accessible 24/7. Whether you have a simple health question, need guidance on a specific condition, or seek advice on healthy living, Medmind is here to assist you. Our AI chatbot is designed to understand your unique needs, offer personalized recommendations, and provide evidence-based information, ensuring you receive accurate and reliable support.
-          </Text>
-
-          <Heading as="h2" size="lg" textAlign={"center"}>
-            Our Approach
-          </Heading>
-
-          <Text fontSize="md" textAlign={"center"}>
-            At Medmind, we prioritize user privacy and data security. We adhere to the highest standards of encryption and data protection protocols to safeguard your personal health information. Your trust is of utmost importance to us, and we are committed to maintaining the confidentiality of all interactions within our platform.
-            We continuously strive to improve our AI algorithms by incorporating feedback from users and staying updated with the latest advancements in healthcare. Our chatbot undergoes regular updates and enhancements to ensure that it delivers the most relevant and up-to-date information.
-          </Text>
-
-          <Heading as="h2" size="lg" textAlign={"center"}>
-            Why Choose Medmind
-          </Heading>
-
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Accessibility
+              Welcome to MedMind - Your Source for Affordable Medications
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              Medmind is accessible from any device with an internet connection, making it convenient for you to seek healthcare guidance whenever you need it.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              At our website, we are dedicated to revolutionizing access to affordable medications. We understand the financial burden that high drug costs can place on individuals and families, and we believe that everyone should have access to the medications they need without breaking the bank. That's why we have partnered directly with drug manufacturers to provide you with the lowest cost medications available.
             </Text>
-          </Box>
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Personalized Support
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Our Approach
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              Our AI chatbot is trained to understand your individual needs and provide tailored recommendations, promoting a personalized approach to healthcare.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We have taken a unique approach to tackle the rising costs of medications. By collaborating directly with reputable drug manufacturers, we are able to cut out unnecessary intermediaries and pass on the savings directly to you. This allows us to offer a wide range of high-quality medications at significantly lower prices compared to traditional pharmacy channels.
             </Text>
-          </Box>
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Reliable Information
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Quality and Safety
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              We collaborate with trusted medical professionals and curate information from reputable sources, ensuring the accuracy and reliability of the information shared.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We prioritize your health and well-being above all else. Rest assured that the medications we offer are sourced directly from authorized manufacturers, ensuring their authenticity and quality. We work exclusively with trusted pharmaceutical companies that adhere to stringent quality control measures and regulatory standards.
             </Text>
-          </Box>
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Empowering Self-Care
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Convenience and Ease
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              Medmind encourages you to become an active participant in your well-being by equipping you with the knowledge and tools to make informed decisions about your health.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We understand that obtaining affordable medications should be a hassle-free experience. Our user-friendly website is designed to make the ordering process quick, easy, and secure. Simply browse our extensive selection of medications, add them to your cart, and proceed to checkout. We offer multiple payment options and ensure discreet packaging for your privacy.
             </Text>
-          </Box>
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Continuous Improvement
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Expert Guidance and Support
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              We are committed to enhancing our AI capabilities and expanding our knowledge base to deliver an ever-improving user experience.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We believe that access to affordable medications should be accompanied by professional guidance and support. Our team of knowledgeable pharmacists is available to answer any questions you may have about your medications, potential side effects, or drug interactions. We are committed to ensuring that you have the information you need to make informed decisions about your healthcare.
             </Text>
-          </Box>
-          <Box mt={5}>
-            <Heading as="h4" size="md" textAlign={"center"}>
-              Join Us on Your Health Journey
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Privacy and Security
             </Heading>
-            <Text fontSize="md" textAlign={"center"}>
-              We invite you to join us on this transformative health journey. Whether you have a pressing medical concern or simply seek guidance on leading a healthier lifestyle, Medmind is here to support you every step of the way. Our AI chatbot is ready to assist you, providing trustworthy information, compassionate support, and empowering guidance.
-              Remember, your health matters, and at Medmind, we strive to make your well-being our top priority. Together, let's unlock the power of AI and take control of our health and happiness.
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              Protecting your personal information is of utmost importance to us. We employ the latest security measures and encryption protocols to safeguard your data. You can trust that your privacy is our top priority, and we will never share your information with third parties without your explicit consent.
             </Text>
-          </Box>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Our Mission
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              Our mission is to empower individuals to take control of their health by providing access to affordable medications without compromising on quality. We believe that no one should have to choose between their health and their financial well-being.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Join Us Today
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We invite you to join us in our mission to make affordable medications accessible to all. Together, we can break down the barriers that prevent individuals from accessing the treatments they need. Explore our website, find the medications you require, and experience the convenience and savings firsthand.
+            </Text>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              At our website, we are committed to delivering affordable medications, exceptional customer service, and a brighter, healthier future for all. Start saving on your prescription medications today and take the first step towards improved well-being.
+            </Text>
+
+          </Flex>
         </VStack>
-
       </VStack>
     </>
   );
