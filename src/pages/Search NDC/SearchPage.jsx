@@ -90,7 +90,7 @@ const SearchPage = () => {
                 variant="success"
                 type="submit"
                 loading={loading}
-                // disabled={loading.toString()}
+              // disabled={loading.toString()}
               >
                 Search
               </Button>
@@ -250,7 +250,72 @@ const SearchPage = () => {
           <Text fontWeight="bold" fontSize="30px" color="red.500">
             Enter NDC Number
           </Text>
+
         )}
+        <VStack
+          spacing={5}
+          align="stretch"
+          maxW="900px"
+          m="auto"
+          bg="white"
+          p={5}
+        >
+          <Flex bg="gray.100" p={4} borderRadius="md" flexDirection="column">
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+
+              Welcome to MedMind - Your Source for Affordable Medications
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              At our website, we are dedicated to revolutionizing access to affordable medications. We understand the financial burden that high drug costs can place on individuals and families, and we believe that everyone should have access to the medications they need without breaking the bank. That's why we have partnered directly with drug manufacturers to provide you with the lowest cost medications available.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Our Approach
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We have taken a unique approach to tackle the rising costs of medications. By collaborating directly with reputable drug manufacturers, we are able to cut out unnecessary intermediaries and pass on the savings directly to you. This allows us to offer a wide range of high-quality medications at significantly lower prices compared to traditional pharmacy channels.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Quality and Safety
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We prioritize your health and well-being above all else. Rest assured that the medications we offer are sourced directly from authorized manufacturers, ensuring their authenticity and quality. We work exclusively with trusted pharmaceutical companies that adhere to stringent quality control measures and regulatory standards.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Convenience and Ease
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We understand that obtaining affordable medications should be a hassle-free experience. Our user-friendly website is designed to make the ordering process quick, easy, and secure. Simply browse our extensive selection of medications, add them to your cart, and proceed to checkout. We offer multiple payment options and ensure discreet packaging for your privacy.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Expert Guidance and Support
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We believe that access to affordable medications should be accompanied by professional guidance and support. Our team of knowledgeable pharmacists is available to answer any questions you may have about your medications, potential side effects, or drug interactions. We are committed to ensuring that you have the information you need to make informed decisions about your healthcare.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Privacy and Security
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              Protecting your personal information is of utmost importance to us. We employ the latest security measures and encryption protocols to safeguard your data. You can trust that your privacy is our top priority, and we will never share your information with third parties without your explicit consent.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Our Mission
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              Our mission is to empower individuals to take control of their health by providing access to affordable medications without compromising on quality. We believe that no one should have to choose between their health and their financial well-being.
+            </Text>
+            <Heading as="h1" size="xl" textAlign="center" color="gray.600" fontSize="20px">
+              Join Us Today
+            </Heading>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              We invite you to join us in our mission to make affordable medications accessible to all. Together, we can break down the barriers that prevent individuals from accessing the treatments they need. Explore our website, find the medications you require, and experience the convenience and savings firsthand.
+            </Text>
+            <Text fontSize="md" textAlign="center" color="gray.500">
+              At our website, we are committed to delivering affordable medications, exceptional customer service, and a brighter, healthier future for all. Start saving on your prescription medications today and take the first step towards improved well-being.
+            </Text>
+
+          </Flex>
+        </VStack>
       </VStack>
     </>
   );
