@@ -46,8 +46,14 @@ const SearchDetailPage = () => {
 
   const handleOtherButtonInput = () => {
     pricesArray.map((item) => {
-      if (otherPackSizes < minPackSize || otherPackSizes > maxPackSize) {
+      if (
+        otherPackSizes &&
+        (otherPackSizes < minPackSize || otherPackSizes > maxPackSize)
+      ) {
         setAlert(true);
+      } else if (!otherPackSizes) {
+        setOtherInput(false);
+        setAlert(false);
       } else {
         setAlert(false);
         setOtherInput(false);

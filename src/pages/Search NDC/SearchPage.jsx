@@ -101,71 +101,150 @@ const SearchPage = () => {
         {product && product.length > 0 ? (
           <>
             {product
-              // .filter((finalNDC) => finalNDC.ndc === matchNdc)
+              .filter((finalNDC) => finalNDC.ndc === matchNdc)
               .map((item, index) => {
                 return (
-                  <Box
-                    w="auto"
-                    mt="30px"
-                    mx="5px"
-                    key={index}
-                    borderRadius="10px"
-                    boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-                    cursor="pointer"
-                    onClick={() => {
-                      navigate("/searchDetail", {
-                        state: {
-                          fromName: item.form,
-                          ndcName: item.ndc,
-                          tabletName: item.product_name,
-                          strengthName: item.strength,
-                          imageName: item.image_url,
-                          pricesName: item.prices,
-                        },
-                      });
-                    }}
-                  >
-                    <HStack align="start" p="10px" spacing="15px">
-                      <VStack>
-                        <Image
-                          src={item?.image_url}
-                          // height={{ base: "100px", sm: "150px" }}
-                          height="150px"
-                          width="150px"
-                          // width={{ base: "80px", sm: "150px" }}
-                          borderRadius="5px"
-                          p="5px"
-                          boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-                        />
-                      </VStack>
-                      <VStack align="start">
-                        <Heading fontSize="24px" color="gray.700">
-                          {item?.product_name}
-                        </Heading>
-                        <Text>{item?.generic_name}</Text>
-                        <Flex
-                          direction={{ base: "column", lg: "row" }}
-                          justify="space-between"
-                          align="baseline"
-                          w={{ base: "auto", lg: "500px" }}
-                        >
-                          <HStack align="baseline">
-                            <Text>{item?.form}</Text>
-                            <Text>•</Text>
-                            <Text>{item?.strength}</Text>
-                          </HStack>
-                          <HStack align="baseline">
-                            <Text fontWeight="bold" color="gray.700">
-                              Manufacturer :
-                            </Text>
-                            <Text>{item?.manufacturer_name}</Text>
-                          </HStack>
-                        </Flex>
-                      </VStack>
-                    </HStack>
-                  </Box>
+                  <VStack>
+                    <Text alignSelf="start" fontWeight="bold">
+                      Primary Manufacturer :
+                    </Text>
+                    <Box
+                      w="auto"
+                      mt="30px"
+                      mx="5px"
+                      key={index}
+                      borderRadius="10px"
+                      boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                      cursor="pointer"
+                      onClick={() => {
+                        navigate("/searchDetail", {
+                          state: {
+                            fromName: item.form,
+                            ndcName: item.ndc,
+                            tabletName: item.product_name,
+                            strengthName: item.strength,
+                            imageName: item.image_url,
+                            pricesName: item.prices,
+                          },
+                        });
+                      }}
+                    >
+                      <HStack align="start" p="10px" spacing="15px">
+                        <VStack>
+                          <Image
+                            src={item?.image_url}
+                            // height={{ base: "100px", sm: "150px" }}
+                            height="150px"
+                            width="150px"
+                            // width={{ base: "80px", sm: "150px" }}
+                            borderRadius="5px"
+                            p="5px"
+                            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                          />
+                        </VStack>
+                        <VStack align="start">
+                          <Heading fontSize="24px" color="gray.700">
+                            {item?.product_name}
+                          </Heading>
+                          <Text>{item?.generic_name}</Text>
+                          <Flex
+                            direction={{ base: "column", lg: "row" }}
+                            justify="space-between"
+                            align="baseline"
+                            w={{ base: "auto", lg: "500px" }}
+                          >
+                            <HStack align="baseline">
+                              <Text>{item?.form}</Text>
+                              <Text>•</Text>
+                              <Text>{item?.strength}</Text>
+                            </HStack>
+                            <HStack align="baseline">
+                              <Text fontWeight="bold" color="gray.700">
+                                Manufacturer :
+                              </Text>
+                              <Text>{item?.manufacturer_name}</Text>
+                            </HStack>
+                          </Flex>
+                        </VStack>
+                      </HStack>
+                    </Box>
+                  </VStack>
                 );
               })}
+
+            {product.length > 1 && (
+              <VStack>
+                <Text alignSelf="start" fontWeight="bold">
+                  Other Manufacturers :
+                </Text>
+                {product
+                  .filter((finalNDC) => finalNDC.ndc !== matchNdc)
+                  .map((item, index) => {
+                    return (
+                      <Box
+                        w="auto"
+                        mt="30px"
+                        mx="5px"
+                        key={index}
+                        borderRadius="10px"
+                        boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                        cursor="pointer"
+                        onClick={() => {
+                          navigate("/searchDetail", {
+                            state: {
+                              fromName: item.form,
+                              ndcName: item.ndc,
+                              tabletName: item.product_name,
+                              strengthName: item.strength,
+                              imageName: item.image_url,
+                              pricesName: item.prices,
+                            },
+                          });
+                        }}
+                      >
+                        <HStack align="start" p="10px" spacing="15px">
+                          <VStack>
+                            <Image
+                              src={item?.image_url}
+                              // height={{ base: "100px", sm: "150px" }}
+                              height="150px"
+                              width="150px"
+                              // width={{ base: "80px", sm: "150px" }}
+                              borderRadius="5px"
+                              p="5px"
+                              boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                            />
+                          </VStack>
+                          <VStack align="start">
+                            <Heading fontSize="24px" color="gray.700">
+                              {item?.product_name}
+                            </Heading>
+                            <Text>{item?.generic_name}</Text>
+                            <Flex
+                              direction={{ base: "column", lg: "row" }}
+                              justify="space-between"
+                              align="baseline"
+                              w={{ base: "auto", lg: "500px" }}
+                            >
+                              <HStack align="baseline">
+                                <Text>{item?.form}</Text>
+                                <Text>•</Text>
+                                <Text>{item?.strength}</Text>
+                              </HStack>
+                              <HStack align="baseline">
+                                <Text fontWeight="bold" color="gray.700">
+                                  Manufacturer :
+                                </Text>
+                                <Text>{item?.manufacturer_name}</Text>
+                              </HStack>
+                            </Flex>
+                          </VStack>
+                        </HStack>
+                      </Box>
+                    );
+                  })}
+              </VStack>
+            )}
           </>
         ) : (
           <Text fontWeight="bold" fontSize="30px" color="red.500">
