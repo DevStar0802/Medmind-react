@@ -16,35 +16,35 @@ import {
 } from "@chakra-ui/react";
 const SearchPage = () => {
   const [product, setProduct] = useState([]);
+  const [inputValue, setInputValue] = useState();
   const [loading, setLoading] = useState("false");
   const [matchNdc, setMatchNdc] = useState("");
   const [results, setResults] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
   const navigate = useNavigate();
 
   const getresults = async (searchData) => {
+    console.log("searchData", searchData);
+    // setInputValue(searchData);
     if (searchData.length > 2) {
       try {
         setMatchNdc(searchData);
         setLoading("true");
         await axios
-          .get(
-            `http://ec2-44-215-42-63.compute-1.amazonaws.com:8080/api/search?query=${searchData}`
-          )
+          .get(`https://api.medmind.io/api/search?query=${searchData}`)
           .then((res) => {
-            console.log("REsults", res.data.body);
             setResults(res.data.body);
           });
 
         setLoading("false");
       } catch (error) {
         setLoading("false");
-        console.log("error", error);
+        // console.log("error", error);
       }
     }
   };
   const getApi = async (searchData) => {
     try {
-      console.log("searchData", searchData);
       setMatchNdc(searchData);
       setLoading("true");
       await axios
@@ -52,10 +52,16 @@ const SearchPage = () => {
           `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${searchData}`
         )
         .then((res) => {
-          console.log(res);
-          setProduct(res.data.data);
+          if (res.data.data.length > 0) {
+            console.log("res.data.data.length", res.data.data.length);
+            setProduct(res.data.data);
+            setIsEmpty(false);
+          } else {
+            setProduct([]);
+            setIsEmpty(true);
+          }
         });
-
+      // setInputValue("");
       setLoading("false");
     } catch (error) {
       setLoading("false");
@@ -90,15 +96,17 @@ const SearchPage = () => {
 
   const handleInputChange = (event) => {
     const inputValue = event.target.value;
-    console.log("handleInputChange :", inputValue);
+    setInputValue(inputValue);
     if (inputValue.length > 2) {
       getresults(inputValue);
     }
   };
   const handleQuery = (ndc) => {
-    getApi(ndc);
+    setResults([]);
+    setInputValue(ndc);
   };
-
+  console.log("inputValue", inputValue);
+  console.log(isEmpty);
   return (
     <>
       <VStack mt="10px">
@@ -108,6 +116,7 @@ const SearchPage = () => {
             <Tooltip label="Enter your Query" placement="auto-start">
               <Form.Control
                 type="text"
+                value={inputValue}
                 onChange={handleInputChange}
                 placeholder="Search..."
                 style={{ width: "300px" }}
@@ -134,8 +143,7 @@ const SearchPage = () => {
                       px="5px"
                       cursor="pointer"
                       onClick={() => {
-                        getApi(result.ndc);
-                        setResults([]);
+                        handleQuery(result.ndc);
                       }}
                     >
                       <Text style={{ fontWeight: "600" }} margin="1px">
@@ -148,16 +156,25 @@ const SearchPage = () => {
               </>
             )}
           </Form.Group>
-          {loading === "true" && (
-            <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-center align-items-center">
+            {loading === "true" ? (
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
-            </div>
-          )}
+            ) : (
+              <Button
+                className="w-50 opacity-75 "
+                variant="success"
+                type="submit"
+                loading={loading}
+                // disabled={loading.toString()}
+              >
+                Search
+              </Button>
+            )}
+          </div>
         </Form>
-
-        {product && product.length > 0 ? (
+        {product.length > 0 && (
           <>
             {product
               .filter((finalNDC) => finalNDC.ndc === matchNdc)
@@ -231,7 +248,7 @@ const SearchPage = () => {
                 );
               })}
 
-            {product.length > 1 && (
+            {product.length > 0 && (
               <VStack>
                 <Text alignSelf="start" fontWeight="bold">
                   Other Manufacturers :
@@ -305,9 +322,10 @@ const SearchPage = () => {
               </VStack>
             )}
           </>
-        ) : (
+        )}
+        {isEmpty && (
           <Text fontWeight="bold" fontSize="30px" color="red.500">
-            Enter Your Query
+            No Result found for following Query
           </Text>
         )}
         <VStack
