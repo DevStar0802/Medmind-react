@@ -17,6 +17,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
+import { RiShoppingCartLine } from "react-icons/ri";
+import QuantitySlider from '../../components/QuantitySlider'
+
 const SearchDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,10 +71,8 @@ const SearchDetailPage = () => {
             otherPackSizes - item.units_included_in_base_price;
           let otherPrice =
             packDifference * item.additional_price_per_unit_after_base;
-          let finalOtherPrice =
-            Math.round(item.base_price) + Math.ceil(otherPrice);
-          const finalPrice = Math.round(finalOtherPrice);
-          setPrice(`${finalPrice}.00`);
+          let finalPrice = item.base_price + otherPrice;
+          setPrice(finalPrice.toFixed(2));
         }
       }
     });
@@ -112,7 +113,7 @@ const SearchDetailPage = () => {
             p={{ base: "2", md: "4" }}
           >
             <VStack align="start">
-              <Heading>{location.state.tabletName}</Heading>
+              <Heading>{location.state.genericName} ({location.state.tabletName})</Heading>
               <Flex
                 gap={5}
                 align="start"
@@ -129,6 +130,7 @@ const SearchDetailPage = () => {
                 />
 
                 <VStack align="flex-start" ml="2" spacing={"6"}>
+                
                   <HStack
                     // gap={1}
 
@@ -145,8 +147,8 @@ const SearchDetailPage = () => {
                       style={{ margin: "0 0 0 10px" }}
                       color="rgb(20, 66, 114)"
                     />
-                    <Text fontWeight="bold" color="rgb(20, 66, 114)">
-                      Prescription Required
+                     <Text fontWeight="bold" color="rgb(20, 66, 114)">
+                      {location.state.requiresPrescription ? "Prescription Required" : "Human OTC product"}
                     </Text>
                   </HStack>
 
@@ -166,9 +168,11 @@ const SearchDetailPage = () => {
                     w="90%"
                     maxW="600px"
                   >
-                    <Text pt="10px" fontWeight="bold" color="blue.700">
+                    {console.log(`requires prescription${location.state.requiresPrescription}`)}
+                    {
+                    location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
                       Contact your doctor for prescription
-                    </Text>
+                    </Text>}
                   </HStack>
                 </VStack>
               </Flex>
@@ -212,7 +216,6 @@ const SearchDetailPage = () => {
               mx="50px"
             >
               <VStack gap={1} align="start">
-                <Heading>{location.state.tabletName}</Heading>
                 <HStack align="baseline">
                   <Text>{location.state.fromName}</Text>
                   <Text>•</Text>
@@ -236,7 +239,7 @@ const SearchDetailPage = () => {
                   onChange=""
                 />
                 <Text>Quantity</Text>
-                <HStack gap={2}>
+                {/* <HStack gap={2}>
                   <RadioGroup
                     options={pricesArray
                       .filter(
@@ -256,7 +259,8 @@ const SearchDetailPage = () => {
                       setQuantity(value);
                     }}
                   />
-                </HStack>
+                </HStack> */}
+                {/* <QuantitySlider/> */}
                 <HStack>
                   {!otherInput && (
                     <Button onClick={() => setOtherInput(true)}>others</Button>
@@ -269,6 +273,7 @@ const SearchDetailPage = () => {
                           type="text"
                           placeholder={`From ${minPackSize} - ${maxPackSize}`}
                           borderColor="#7fa8d4"
+                          w='300px'
                           value={otherPackSizes}
                           onChange={(e) => {
                             setOtherPackSizes(e.target.value);
@@ -295,6 +300,14 @@ const SearchDetailPage = () => {
                     </VStack>
                   )}
                 </HStack>
+                <Button colorScheme='blue'
+                rightIcon={<RiShoppingCartLine />}
+                w='300px'
+                mt='30px'
+                textAlign={"left"}
+                rightIconSpacing={2}>
+                  Add to cart
+                </Button>
               </VStack>
             </VStack>
             <Text color="gray.500" ms="10px">

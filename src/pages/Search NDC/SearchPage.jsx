@@ -31,10 +31,16 @@ const SearchPage = () => {
         setMatchNdc(searchData);
         setLoading("true");
         await axios
-          .get(`https://api.medmind.io/api/search?query=${searchData}`)
-          .then((res) => {
-            setResults(res.data.body);
-          });
+        .get(`https://api.medmind.io/api/search_honeybee?query=${searchData}`)
+        .then((res) => {
+          setResults(res.data.body)
+        })
+
+        // axios
+        //   .get(`api.medmind.io/search?query=${searchData}`)
+        //   .then((res) => {
+        //     setResults(results + res.data.body);
+        //   });
 
         setLoading("false");
       } catch (error) {
@@ -147,7 +153,7 @@ const SearchPage = () => {
                       }}
                     >
                       <Text style={{ fontWeight: "600" }} margin="1px">
-                        {result.name}
+                        {result.generic_name} ({result.brand_name})
                       </Text>
                       <Text margin="1px">{result.ndc}</Text>
                     </Box>
@@ -181,9 +187,6 @@ const SearchPage = () => {
               .map((item, index) => {
                 return (
                   <VStack>
-                    <Text alignSelf="start" fontWeight="bold">
-                      Primary Manufacturer :
-                    </Text>
                     <Box
                       w="auto"
                       mt="30px"
@@ -198,9 +201,11 @@ const SearchPage = () => {
                             fromName: item.form,
                             ndcName: item.ndc,
                             tabletName: item.product_name,
+                            genericName: item.generic_name,
                             strengthName: item.strength,
                             imageName: item.image_url,
                             pricesName: item.prices,
+                            requiresPrescription: item.requires_prescription
                           },
                         });
                       }}
@@ -220,9 +225,9 @@ const SearchPage = () => {
                         </VStack>
                         <VStack align="start">
                           <Heading fontSize="24px" color="gray.700">
-                            {item?.product_name}
+                            {item?.generic_name}
                           </Heading>
-                          <Text>{item?.generic_name}</Text>
+                          <Text>{item?.product_name}</Text>
                           <Flex
                             direction={{ base: "column", lg: "row" }}
                             justify="space-between"
@@ -256,6 +261,7 @@ const SearchPage = () => {
                 {product
                   .filter((finalNDC) => finalNDC.ndc !== matchNdc)
                   .map((item, index) => {
+                    console.log(`the item is ${JSON.stringify(item)}`)
                     return (
                       <Box
                         w="auto"
@@ -271,9 +277,11 @@ const SearchPage = () => {
                               fromName: item.form,
                               ndcName: item.ndc,
                               tabletName: item.product_name,
+                              genericName: item.generic_name,
                               strengthName: item.strength,
                               imageName: item.image_url,
                               pricesName: item.prices,
+                              requiresPrescription: item.requires_prescription,
                             },
                           });
                         }}
@@ -293,9 +301,9 @@ const SearchPage = () => {
                           </VStack>
                           <VStack align="start">
                             <Heading fontSize="24px" color="gray.700">
-                              {item?.product_name}
+                            {item?.generic_name}
                             </Heading>
-                            <Text>{item?.generic_name}</Text>
+                            <Text>{item?.product_name}</Text>
                             <Flex
                               direction={{ base: "column", lg: "row" }}
                               justify="space-between"
