@@ -169,7 +169,7 @@ const SearchPage = () => {
               </Spinner>
             ) : (
               <Button
-                className="w-50 opacity-75 "
+                className="w-50 "
                 variant="success"
                 type="submit"
                 loading={loading}

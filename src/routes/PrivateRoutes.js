@@ -4,6 +4,8 @@ import MainPage from "../pages/MainPage";
 import SearchPage from "../pages/Search NDC/SearchPage";
 import AboutPage from "../pages/AboutPage";
 import SearchDetailPage from "../pages/Search NDC/SearchDetailPage";
+import Login from "../pages/Login/index.jsx";
+import SignUp from "../pages/SignUp/index.jsx";
 
 const PrivateRoutes = () => {
   return (
@@ -13,6 +15,8 @@ const PrivateRoutes = () => {
         <Route path="/searchPage" element={<SearchPage />} />
         <Route path="/searchDetail" element={<SearchDetailPage />} />
         <Route path="/aboutPage" element={<AboutPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </>
   );
