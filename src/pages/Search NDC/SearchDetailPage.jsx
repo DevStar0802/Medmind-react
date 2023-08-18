@@ -18,7 +18,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
-import QuantitySlider from '../../components/QuantitySlider'
 
 const SearchDetailPage = () => {
   const navigate = useNavigate();
@@ -170,7 +169,7 @@ const SearchDetailPage = () => {
                   >
                     {console.log(`requires prescription${location.state.requiresPrescription}`)}
                     {
-                    location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
+                    location.state.requiresPrescription && <Text py="10px" fontWeight="bold" color="blue.700">
                       Contact your doctor for prescription
                     </Text>}
                   </HStack>

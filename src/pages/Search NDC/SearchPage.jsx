@@ -173,6 +173,7 @@ const SearchPage = () => {
                 variant="success"
                 type="submit"
                 loading={loading}
+                color="green"
                 // disabled={loading.toString()}
               >
                 Search
