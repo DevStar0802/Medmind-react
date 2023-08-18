@@ -86,7 +86,7 @@ export default function SignUp() {
           <body class="h-full">
           ```
         */}
-            {signedUp || forgotPassword && isVisible && <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>}
+            {signedUp && isVisible && <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     {/* <img
@@ -165,7 +165,7 @@ export default function SignUp() {
                 </div>
             </div>
             {signedUp ? <ActionPanel username={formData.email} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null}
-            {forgotPassword ? <ActionPanel username={formData.email} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null}
+            {/* {forgotPassword ? <ActionPanel username={formData.email} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null} */}
         </>
     )
 }
