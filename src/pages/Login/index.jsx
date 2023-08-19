@@ -1,28 +1,60 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+import { Auth } from 'aws-amplify';
+import React, { useState, useEffect } from 'react';
+import ForgottenPasswordPanel from '../../components/ForgetPasswordPanel'
+import { useNavigate } from 'react-router-dom';
+import { isTokenValid } from '../../utilities/jwt_utilities';
+
 export default function Login() {
+    const [isVisible, setIsVisible] = useState(true);
+    const [hasForgettenPassword, setHasForgottenPassword] = useState(false);
+    const navigate = useNavigate();
+
+    Auth.configure({
+        region: 'us-east-1',
+        userPoolId: 'us-east-1_8WhvOPNCY',
+        userPoolWebClientId: '1s5g80crh67e55ngbumui3qp33',
+    });
+
+    useEffect(() => {
+        const checkTokenValidity = async () => {
+            try {
+                const isValidToken = await isTokenValid();
+                if (isValidToken) {
+                    navigate('/', { replace: true });
+                }
+            } catch (exception) {
+                console.log(exception);
+            }
+        };
+
+        checkTokenValidity();
+    }, []);
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const [error, setError] = useState(null);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevState) => ({ ...prevState, [name]: value }));
+    };
+
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        try {
+            const cognitoPayload = await Auth.signIn(formData.email, formData.password);
+            document.cookie = `authoization_token=${cognitoPayload.signInUserSession.accessToken.jwtToken}`;
+            navigate('/');
+        } catch (signInError) {
+            alert(signInError.message);
+        }
+    };
+
     return (
         <>
-            {/*
-          This example requires updating your template:
-  
-          ```
-          <html class="h-full bg-white">
-          <body class="h-full">
-          ```
-        */}
+            {hasForgettenPassword && isVisible && <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -31,7 +63,7 @@ export default function Login() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" action="#" method="POST">
+                    <form className="space-y-6" onSubmit={handleSignIn}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Email address
@@ -44,6 +76,7 @@ export default function Login() {
                                     autoComplete="email"
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -54,7 +87,14 @@ export default function Login() {
                                     Password
                                 </label>
                                 <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                    <a
+                                        href="#"
+                                        className="font-semibold text-indigo-600 hover:text-indigo-500"
+                                        onClick={(e) => {
+                                            e.preventDefault(); // prevent the default action
+                                            setHasForgottenPassword(true); // set the state to true
+                                        }}
+                                    >
                                         Forgot password?
                                     </a>
                                 </div>
@@ -67,6 +107,7 @@ export default function Login() {
                                     autoComplete="current-password"
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -89,6 +130,7 @@ export default function Login() {
                     </p>
                 </div>
             </div>
+            {hasForgettenPassword ? <ForgottenPasswordPanel username={formData.email} password={formData.password} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null}
         </>
-    )
+    );
 }

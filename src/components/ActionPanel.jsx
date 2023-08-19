@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Auth } from 'aws-amplify';
 
-export default function ActionPanel({ username, isVisible, setIsVisible, navigate }) {
+export default function ActionPanel({ username, password, isVisible, setIsVisible, navigate }) {
   const [confirmationCode, setConfirmationCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -13,14 +13,15 @@ export default function ActionPanel({ username, isVisible, setIsVisible, navigat
       console.log('Code confirmed successfully.');
       setIsConfirmed(true);
       setIsVisible(false); // Close the panel after successful confirmation
-      // Navigate to another page or provide feedback to the user
+      const cognitoPayload = await Auth.signIn(username, password);
+      document.cookie = `authoization_token=${cognitoPayload.signInUserSession.accessToken.jwtToken}`;
       navigate("/")
       
     } catch (error) {
       setErrorMessage(error.message);
     }
   }
-
+  
   return (<>
     { isVisible && !isConfirmed && <div className="absolute inset-0 flex items-center justify-center z-50">
       <div className="w-96 h-64 bg-white p-6 rounded shadow-lg">

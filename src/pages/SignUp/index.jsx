@@ -14,12 +14,14 @@
 */
 import ActionPanel from '../../components/ActionPanel'
 import { Auth } from 'aws-amplify';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useHistory
+import { isTokenValid } from '../../utilities/jwt_utilities';
 
 export default function SignUp() {
     const [signedUp, setSignedUp] = useState(false);
     const [isVisible, setIsVisible] = useState(true); // Add this state
+
     const navigate = useNavigate(); // Get the navigate function from the hook
 
     Auth.configure({
@@ -28,7 +30,21 @@ export default function SignUp() {
         userPoolWebClientId: '1s5g80crh67e55ngbumui3qp33',
     });
 
-    const [formData, setFormData] = useState({
+    useEffect(() => {
+        const checkTokenValidity = async () => {
+          try {
+            const isValidToken = await isTokenValid();
+            if (isValidToken) {
+                navigate('/');
+            }
+          } catch (exception) {
+            console.log(exception);
+          }
+        };
+      
+        checkTokenValidity();
+      }, []);
+          const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
@@ -49,21 +65,29 @@ export default function SignUp() {
                     email: formData.email
                 }
             });
+
             setSignedUp(true);
+
+            // const jwtToken = await Auth.signIn(
+            //     formData.email,
+            //     formData.password
+            // )
+
             console.log(user);
         } catch (error) {
             if (error.code == "UsernameExistsException") {
                 // Try to resend the signup code to check if user is confirmed or not
                 try {
                     await Auth.resendSignUp(formData.email);
-                    console.log('User is already confirmed.');
+                    // console.log('User is already confirmed.');
+                    // alert("The given email is already being used!")
                     // Handle logic for confirmed users
                     setSignedUp(true);
                 } catch (resendError) {
                     if (resendError.code === 'UserNotFoundException') {
                         console.log('User exists but is not confirmed.');
                         // Handle logic for unconfirmed users
-                        setSignedUp(false); // or other logic to handle unconfirmed users
+                        setSignedUp(true); // or other logic to handle unconfirmed users
                     } else {
                         alert(resendError.message);
                         setError(resendError.message);
@@ -125,11 +149,6 @@ export default function SignUp() {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
-                                <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
                             </div>
                             <div className="mt-2">
                                 <input
@@ -164,8 +183,7 @@ export default function SignUp() {
                     </p>
                 </div>
             </div>
-            {signedUp ? <ActionPanel username={formData.email} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null}
-            {/* {forgotPassword ? <ActionPanel username={formData.email} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null} */}
+            {signedUp ? <ActionPanel username={formData.email} password={formData.password} setIsVisible={setIsVisible} isVisible={isVisible} navigate={navigate} /> : null}
         </>
     )
 }
