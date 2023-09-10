@@ -28,8 +28,6 @@ exports.getProducts = functions.https.onRequest(async (req, res) => {
       "grant_type=client_credentials&client_id=_9zPdh0UntynX0sWJUlvzdQBGCZZfZBqxORdWyH-lNI&client_secret=svMyMhIzNhfZekpcd38APiR3eLzg70t8YuifESj_awo"
     );
     const token = tokenResponse.data.access_token;
-    console.log("token", token);
-    console.log("ndc", ndc);
 
     if (token == null || token === undefined) {
       return res.status(400).json({ message: "Token is required" });
@@ -55,13 +53,11 @@ exports.getProducts = functions.https.onRequest(async (req, res) => {
 
     return res.status(200).json({ data: response.data, success: true });
   } catch (err) {
-    console.log(err.message);
     return res.status(500).json({ error: err });
   }
 });
 
 exports.testingDB = functions.https.onRequest((req, res) => {
-  console.log("Start of the function");
   const connection = mysql.createConnection({
     host: "server.geekybugs.com",
     port: "3306",

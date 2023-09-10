@@ -13,7 +13,60 @@ import {
   Text,
   Tooltip,
   VStack,
+  resolveStyleConfig,
 } from "@chakra-ui/react";
+
+
+
+function combineLists(lists) {
+  if (lists == null || lists == undefined)
+    return;
+  let combinedArray = [];
+  for (let i = 0; i < lists.length; i++) {
+    combinedArray = combinedArray.concat(lists[i]);
+  }
+  return combinedArray;
+}
+
+function combineListsOfLists(results) {
+  if (results == null || results == undefined)
+    return;
+  const values = Object.values(results);
+  if (values == undefined)
+    return;
+  const combinedList = combineLists(values);
+  let combinedArray = [];
+  for (let i = 0; i < combinedList.length; i++) {
+    const newItem = combinedList[i * 2 + 1];
+    if (newItem != undefined)
+      combinedArray = combinedArray.concat(newItem);
+  }
+
+  return combinedArray;
+}
+
+function countValues(obj) {
+  const result = {};
+  if (obj == null || obj == undefined)
+    return;
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (Array.isArray(obj[key])) {
+        const values = Object.values(obj[key]);
+        if (obj[key] == null || obj[key] == undefined)
+          continue;
+
+        const combinedList = combineLists(values);
+        result[key] = [obj[key].length, combinedList];
+      } else {
+        result[key] = 1;
+      }
+    }
+  }
+
+  return result;
+}
+
 const SearchPage = () => {
   const [product, setProduct] = useState([]);
   const [inputValue, setInputValue] = useState();
@@ -24,17 +77,19 @@ const SearchPage = () => {
   const navigate = useNavigate();
 
   const getresults = async (searchData) => {
-    console.log("searchData", searchData);
     // setInputValue(searchData);
+    if (searchData == null || searchData == undefined)
+      return;
+
     if (searchData.length > 2) {
       try {
-        setMatchNdc(searchData);
         setLoading("true");
         await axios
-        .get(`https://api.medmind.io/api/search_honeybee?query=${searchData}`)
-        .then((res) => {
-          setResults(res.data.body)
-        })
+          .get(`http://127.0.0.1:8080/api/search_honeybee?query=${searchData}`)
+          .then((res) => {
+            const result = countValues(res.data.body);
+            setResults(result)
+          })
 
         // axios
         //   .get(`api.medmind.io/search?query=${searchData}`)
@@ -45,7 +100,6 @@ const SearchPage = () => {
         setLoading("false");
       } catch (error) {
         setLoading("false");
-        // console.log("error", error);
       }
     }
   };
@@ -55,12 +109,14 @@ const SearchPage = () => {
       setLoading("true");
       await axios
         .get(
-          `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${searchData}`
+          `http://127.0.0.1:8080/api/search_honeybee?query=${searchData}`
         )
         .then((res) => {
-          if (res.data.data.length > 0) {
-            console.log("res.data.data.length", res.data.data.length);
-            setProduct(res.data.data);
+          if (res == null || res == undefined || res.data == null || res.data == undefined || res.data.body == undefined || res.data.body == null)
+            return;
+
+          if (res.data.body && Object.keys(res.data.body).length > 0) {
+            setProduct(res.data.body);
             setIsEmpty(false);
           } else {
             setProduct([]);
@@ -71,7 +127,6 @@ const SearchPage = () => {
       setLoading("false");
     } catch (error) {
       setLoading("false");
-      console.log("error", error);
     }
   };
 
@@ -79,29 +134,21 @@ const SearchPage = () => {
     event.preventDefault();
     const form = event.target;
     let ndc = form.formBasicEmail.value.trim();
+    await getApi(ndc);
+  };
 
-    if (ndc.includes("-")) {
-      let splittedVal = ndc.split("-");
-      if (splittedVal.join("").length === 11) {
-        await getApi(splittedVal.join(""));
-      } else {
-        let finalNdc = splittedVal.map((portion, index) => {
-          let numberOfZeros = 0;
-          if ((index === 0 || index === 1) && portion.length < 5 - index) {
-            numberOfZeros = 5 - index - portion.length;
-          } else if (index === 2 && portion.length < 2) {
-            numberOfZeros = 2 - portion.length;
-          }
-          portion = "0".repeat(numberOfZeros) + portion; //Array(numberOfZeros + 1).join("0")
-          return portion;
-        });
-        await getApi(finalNdc.join(""));
-      }
-    } else if (ndc.length > 1) await getApi(ndc);
+  const handleSubmitFromSearch = async (event, result) => {
+    event.preventDefault();
+
+    setResults(null);
+    setProduct(result);
+    setIsEmpty(false);
   };
 
   const handleInputChange = (event) => {
     const inputValue = event.target.value;
+    if (inputValue === null || inputValue === undefined)
+      return;
     setInputValue(inputValue);
     if (inputValue.length > 2) {
       getresults(inputValue);
@@ -111,13 +158,11 @@ const SearchPage = () => {
     setResults([]);
     setInputValue(ndc);
   };
-  console.log("inputValue", inputValue);
-  console.log(isEmpty);
   return (
     <>
       <VStack mt="10px">
         <Heading textAlign="center">Search </Heading>
-        <Form onSubmit={handleSubmit} style={{ position: "relative" }}>
+        <Form onSubmit={(event) => handleSubmitFromSearch(event, combineListsOfLists(results))} style={{ position: "relative" }}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Tooltip label="Enter your Query" placement="auto-start">
               <Form.Control
@@ -128,7 +173,7 @@ const SearchPage = () => {
                 style={{ width: "300px" }}
               />
             </Tooltip>
-            {results && results.length > 0 && (
+            {results && Object.keys(results) && Object.keys(results).length > 0 && (
               <>
                 <Box
                   position="absolute"
@@ -140,7 +185,7 @@ const SearchPage = () => {
                   maxH="600px"
                   overflowY="scroll"
                 >
-                  {results.map((result, index) => (
+                  {Object.keys(results).map((result, index) => (
                     <Box
                       borderBottom="1px solid #dadada"
                       key={index}
@@ -148,14 +193,14 @@ const SearchPage = () => {
                       gap={3}
                       px="5px"
                       cursor="pointer"
-                      onClick={() => {
-                        handleQuery(result.ndc);
+                      onClick={(event) => {
+                        handleSubmitFromSearch(event, results[result][1]);
                       }}
                     >
                       <Text style={{ fontWeight: "600" }} margin="1px">
-                        {result.generic_name} ({result.brand_name})
+                        {result}
                       </Text>
-                      <Text margin="1px">{result.ndc}</Text>
+                      <Text margin="1px">{results[result][0]} choices</Text>
                     </Box>
                   ))}
                 </Box>
@@ -174,14 +219,14 @@ const SearchPage = () => {
                 type="submit"
                 loading={loading}
                 color="green"
-                // disabled={loading.toString()}
+              // disabled={loading.toString()}
               >
                 Search
               </Button>
             )}
           </div>
         </Form>
-        {product.length > 0 && (
+        {product && product.length > 0 && (
           <>
             {product
               .filter((finalNDC) => finalNDC.ndc === matchNdc)
@@ -205,7 +250,6 @@ const SearchPage = () => {
                             genericName: item.generic_name,
                             strengthName: item.strength,
                             imageName: item.image_url,
-                            pricesName: item.prices,
                             requiresPrescription: item.requires_prescription
                           },
                         });
@@ -254,15 +298,11 @@ const SearchPage = () => {
                 );
               })}
 
-            {product.length > 0 && (
+            {product && product.length > 0 && (
               <VStack>
-                <Text alignSelf="start" fontWeight="bold">
-                  Other Manufacturers :
-                </Text>
                 {product
                   .filter((finalNDC) => finalNDC.ndc !== matchNdc)
                   .map((item, index) => {
-                    console.log(`the item is ${JSON.stringify(item)}`)
                     return (
                       <Box
                         w="auto"
@@ -302,7 +342,7 @@ const SearchPage = () => {
                           </VStack>
                           <VStack align="start">
                             <Heading fontSize="24px" color="gray.700">
-                            {item?.generic_name}
+                              {item?.generic_name}
                             </Heading>
                             <Text>{item?.product_name}</Text>
                             <Flex

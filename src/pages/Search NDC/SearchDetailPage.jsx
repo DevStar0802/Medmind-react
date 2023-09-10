@@ -18,33 +18,59 @@ import { useLocation, useNavigate } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
+import axios from "axios";
 
 const SearchDetailPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const fromOptions = [location.state.fromName];
-  const strengthOptions = [location.state.strengthName];
-  const [pricesArray, setPricesArray] = useState(location.state.pricesName);
   const [quantity, setQuantity] = useState("");
   const [otherPackSizes, setOtherPackSizes] = useState("");
   const [price, setPrice] = useState("");
   const [otherQuantity, setOtherQuantity] = useState();
   const [otherInput, setOtherInput] = useState(false);
   const [alert, setAlert] = useState(false);
+  const location = useLocation();
+  const fromOptions = [location.state.fromName];
+  const strengthOptions = [location.state.strengthName];
+  const [pricesArray, setPricesArray] = useState("");
+  const [minPackSize, setMinPackSize] = useState(null);
+  const [maxPackSize, setMaxPackSize] = useState(null);
+  
   useEffect(() => {
-    setQuantity(pricesArray[0].units_included_in_base_price.toString());
+    axios.get(`https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`).then((res) => {
+      if (res.data.data.length > 0) {
+        console.log("res.data.data", res.data.data);
+        const objOfObjects = res.data.data.reduce((acc, cur) => {
+          const key = cur.ndc;
+          acc[key] = cur;
+        
+          return acc;
+        }, {});
+        
+        setPricesArray(objOfObjects[location.state.ndcName].prices);
+      }
+    })
+  }, []);
+
+  useEffect(() => {
+    if (pricesArray != "") {
+      const newMinPackSize = pricesArray[0].end_package_size;
+      const newMaxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
+      
+      setMinPackSize(newMinPackSize);
+      setMaxPackSize(newMaxPackSize);
+      setQuantity(pricesArray[0].units_included_in_base_price.toString());
+    }
   }, [pricesArray]);
 
   useEffect(() => {
-    pricesArray.map((item) => {
-      if (item.units_included_in_base_price.toString() === quantity) {
-        setPrice(item.base_price);
-      }
-    });
+    if (pricesArray != "") {
+      pricesArray.map((item) => {
+        if (item.units_included_in_base_price.toString() === quantity) {
+          setPrice(item.base_price);
+        }
+      });
+    }
   }, [quantity]);
-  const minPackSize = pricesArray[0].end_package_size;
-  const maxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
 
   const handleOtherButtonInput = () => {
     pricesArray.map((item) => {
@@ -167,7 +193,6 @@ const SearchDetailPage = () => {
                     w="90%"
                     maxW="600px"
                   >
-                    {console.log(`requires prescription${location.state.requiresPrescription}`)}
                     {
                     location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
                       Contact your doctor for prescription
