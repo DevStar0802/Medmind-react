@@ -85,7 +85,7 @@ const SearchPage = () => {
       try {
         setLoading("true");
         await axios
-          .get(`http://127.0.0.1:8080/api/search_honeybee?query=${searchData}`)
+          .get(`https://api.medmind.io/api/search_honeybee?query=${searchData}`)
           .then((res) => {
             const result = countValues(res.data.body);
             setResults(result)
@@ -109,7 +109,7 @@ const SearchPage = () => {
       setLoading("true");
       await axios
         .get(
-          `http://127.0.0.1:8080/api/search_honeybee?query=${searchData}`
+          `https://api.medmind.io/api/search_honeybee?query=${searchData}`
         )
         .then((res) => {
           if (res == null || res == undefined || res.data == null || res.data == undefined || res.data.body == undefined || res.data.body == null)
