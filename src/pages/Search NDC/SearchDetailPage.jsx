@@ -1,17 +1,17 @@
 import {
-  Alert,
-  AlertIcon,
   Box,
   Button,
   Flex,
   HStack,
   Heading,
   Image,
-  Input,
-  InputGroup,
-  InputRightElement,
   Text,
   VStack,
+  InputGroup,
+  Input,
+  InputRightElement,
+  Alert,
+  AlertIcon
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
+import QuantitySlider from '../../components/QuantitySlider'
 
 const SearchDetailPage = () => {
   const navigate = useNavigate();
@@ -34,45 +35,9 @@ const SearchDetailPage = () => {
   const [pricesArray, setPricesArray] = useState("");
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
-  
-  useEffect(() => {
-    axios.get(`https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`).then((res) => {
-      if (res.data.data.length > 0) {
-        console.log("res.data.data", res.data.data);
-        const objOfObjects = res.data.data.reduce((acc, cur) => {
-          const key = cur.ndc;
-          acc[key] = cur;
-        
-          return acc;
-        }, {});
-        
-        setPricesArray(objOfObjects[location.state.ndcName].prices);
-      }
-    })
-  }, []);
 
-  useEffect(() => {
-    if (pricesArray != "") {
-      const newMinPackSize = pricesArray[0].end_package_size;
-      const newMaxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
-      
-      setMinPackSize(newMinPackSize);
-      setMaxPackSize(newMaxPackSize);
-      setQuantity(pricesArray[0].units_included_in_base_price.toString());
-    }
-  }, [pricesArray]);
+  const handleQuantityChange = () => {
 
-  useEffect(() => {
-    if (pricesArray != "") {
-      pricesArray.map((item) => {
-        if (item.units_included_in_base_price.toString() === quantity) {
-          setPrice(item.base_price);
-        }
-      });
-    }
-  }, [quantity]);
-
-  const handleOtherButtonInput = () => {
     pricesArray.map((item) => {
       if (
         otherPackSizes &&
@@ -92,16 +57,52 @@ const SearchDetailPage = () => {
           otherPackSizes >= item.start_package_size &&
           otherPackSizes <= item.end_package_size
         ) {
-          const packDifference =
-            otherPackSizes - item.units_included_in_base_price;
-          let otherPrice =
-            packDifference * item.additional_price_per_unit_after_base;
+          const packDifference = otherPackSizes - item.units_included_in_base_price;
+          let otherPrice = packDifference * item.additional_price_per_unit_after_base;
           let finalPrice = item.base_price + otherPrice;
           setPrice(finalPrice.toFixed(2));
         }
       }
     });
   };
+
+  useEffect(() => {
+    axios.get(`https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`).then((res) => {
+      if (res.data.data.length > 0) {
+        console.log("res.data.data", res.data.data);
+        const objOfObjects = res.data.data.reduce((acc, cur) => {
+          const key = cur.ndc;
+          acc[key] = cur;
+
+          return acc;
+        }, {});
+
+        setPricesArray(objOfObjects[location.state.ndcName].prices);
+      }
+    })
+  }, []);
+
+  useEffect(() => {
+    if (pricesArray != "") {
+      const newMinPackSize = pricesArray[0].end_package_size;
+      const newMaxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
+
+      setMinPackSize(newMinPackSize);
+      setMaxPackSize(newMaxPackSize);
+      setQuantity(pricesArray[0].units_included_in_base_price.toString());
+    }
+  }, [pricesArray]);
+
+  useEffect(() => {
+    if (pricesArray != "") {
+      pricesArray.map((item) => {
+        if (item.units_included_in_base_price.toString() === quantity) {
+          setPrice(item.base_price);
+        }
+      });
+    }
+  }, [quantity]);
+
   return (
     <>
       <Box>
@@ -155,7 +156,7 @@ const SearchDetailPage = () => {
                 />
 
                 <VStack align="flex-start" ml="2" spacing={"6"}>
-                
+
                   <HStack
                     // gap={1}
 
@@ -172,7 +173,7 @@ const SearchDetailPage = () => {
                       style={{ margin: "0 0 0 10px" }}
                       color="rgb(20, 66, 114)"
                     />
-                     <Text fontWeight="bold" color="rgb(20, 66, 114)">
+                    <Text fontWeight="bold" color="rgb(20, 66, 114)">
                       {location.state.requiresPrescription ? "Prescription Required" : "Human OTC product"}
                     </Text>
                   </HStack>
@@ -194,9 +195,9 @@ const SearchDetailPage = () => {
                     maxW="600px"
                   >
                     {
-                    location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
-                      Contact your doctor for prescription
-                    </Text>}
+                      location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
+                        Contact your doctor for prescription
+                      </Text>}
                   </HStack>
                 </VStack>
               </Flex>
@@ -252,17 +253,23 @@ const SearchDetailPage = () => {
                 <RadioGroup
                   options={fromOptions}
                   name="from"
-                  defaultValue={fromOptions[0]}
                   onChange=""
                 />
                 <Text>Strength</Text>
                 <RadioGroup
-                  options={strengthOptions}
+                  options={fromOptions}
                   name="from"
-                  defaultValue={strengthOptions[0]}
                   onChange=""
                 />
                 <Text>Quantity</Text>
+                <HStack gap={12}>
+                  <Button onClick={event => {
+                    setQuantity(30);
+                    handleQuantityChange();
+                    }}>30</Button>    
+                  <Button onClick={event => setQuantity(60)}>60</Button>    
+                  <Button onClick={event => setQuantity(90)}>90</Button>    
+                </HStack>
                 {/* <HStack gap={2}>
                   <RadioGroup
                     options={pricesArray
@@ -284,7 +291,7 @@ const SearchDetailPage = () => {
                     }}
                   />
                 </HStack> */}
-                {/* <QuantitySlider/> */}
+                {/* <QuantitySlider quantity={quantity} setQuantity={setQuantity} minValue={minPackSize} maxValue={maxPackSize} /> */}
                 <HStack>
                   {!otherInput && (
                     <Button onClick={() => setOtherInput(true)}>others</Button>
@@ -307,7 +314,7 @@ const SearchDetailPage = () => {
                           <Box
                             cursor="pointer"
                             color="#7fa8d4"
-                            onClick={() => handleOtherButtonInput()}
+                            onClick={() => handleQuantityChange()}
                           >
                             Done
                           </Box>
@@ -325,11 +332,10 @@ const SearchDetailPage = () => {
                   )}
                 </HStack>
                 <Button colorScheme='blue'
-                rightIcon={<RiShoppingCartLine />}
-                w='300px'
-                mt='30px'
-                textAlign={"left"}
-                rightIconSpacing={2}>
+                  rightIcon={<RiShoppingCartLine />}
+                  w='300px'
+                  mt='30px'
+                  textAlign={"left"}>
                   Add to cart
                 </Button>
               </VStack>
