@@ -17,7 +17,7 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
 
   const renderCartWithCount = () => {
     return (
-      <HStack cursor="pointer" onClick={() => handleNavigation('/checkout')} position="relative">
+      <HStack cursor="pointer" onClick={() => handleNavigation('/cart')} position="relative">
         <RiShoppingCartLine color="white" size="24px" />
         <Text
           position="absolute"
@@ -106,7 +106,7 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
         { path: "/signup", label: "Sign Up", border: "1px solid grey", px: "10px", borderRadius: "lg" },
 
       ]),
-    { path: "/checkout", icon: RiShoppingCartLine, action: () => console.log('Go to cart'), size: "20px" },
+    { path: "/cart", icon: RiShoppingCartLine, action: () => console.log('Go to cart'), size: "20px" },
   ];
 
   return (
