@@ -12,11 +12,15 @@ import React, { useEffect, useState } from "react";
 import { hitChatGpt } from "../utils";
 import { AiOutlineSend } from "react-icons/ai";
 import ChatPage from "./Chat/ChatPage";
+import NavigationBar from '../components/NavigationBar'
+
 const MainPage = () => {
   const [InitialMessage, setInitialMessage] = useState("");
   const [firstRun, setFirstRun] = useState(true);
   const [firstPageLoading, setFirstPageLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
   const backgroundColor = "white";
   const greenColor = "rgb(96, 153, 102)";
   useEffect(() => {
@@ -29,13 +33,15 @@ const MainPage = () => {
     if (message = null)
       return;
     setFirstPageLoading(true);
-    let callMsgs = [...messages, {role: "user", content:"message"}];
+    let callMsgs = [...messages, { role: "user", content: "message" }];
     setTimeout(async () => {
       hitChatGpt(callMsgs, setMessages);
       setFirstPageLoading(false);
-  })};
+    })
+  };
   return (
     <>
+      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount}/>
       {firstRun && (
         <VStack
           h="93.5vh"
@@ -92,52 +98,52 @@ const MainPage = () => {
               </InputRightElement>
             </InputGroup>
             <Text align={"center"} width={"20rem"} fontSize={"1.2rem"}>
-                          
+
 
             </Text>
           </VStack>
           <VStack>
-          <Flex
-            borderRadius="10px"
-            direction={"column"}
-            maxW={"90%"}
-            bg="gray.100"
-            h="max-content"
-            p="10px"
-            mb="10px"
-          >
-            <Heading align="center" fontSize="20px" color="gray.600">
-              Disclaimer
-            </Heading>
-            <Text color="gray.500" px="10px">
-              This health chat app is intended for informational purposes only
-              and should not be used as a substitute for professional medical
-              advice, diagnosis, or treatment. Always seek the advice of a
-              qualified healthcare provider with any questions you may have
-              regarding a medical condition. Never disregard professional
-              medical advice or delay in seeking it because of information you
-              have received through this AI health chat app. If you think you
-              may have a medical emergency, call your doctor or emergency
-              services immediately. Reliance on any information provided by this
-              AI health chat app is solely at your own risk.
-            </Text>
-          </Flex>
-          <Flex
-            borderRadius="10px"
-            direction={"column"}
-            maxW={"90%"}
-            bg="gray.100"
-            h="max-content"
-            p="10px"
-            mb="10px"
-          >
-            <Heading align="center" fontSize="20px" color="gray.600">
-            Our Pledge to Personalized Care
-            </Heading>
-            <Text color="gray.500" px="10px" textAlign={"center"}>
-              At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
-            </Text>
-          </Flex>
+            <Flex
+              borderRadius="10px"
+              direction={"column"}
+              maxW={"90%"}
+              bg="gray.100"
+              h="max-content"
+              p="10px"
+              mb="10px"
+            >
+              <Heading align="center" fontSize="20px" color="gray.600">
+                Disclaimer
+              </Heading>
+              <Text color="gray.500" px="10px">
+                This health chat app is intended for informational purposes only
+                and should not be used as a substitute for professional medical
+                advice, diagnosis, or treatment. Always seek the advice of a
+                qualified healthcare provider with any questions you may have
+                regarding a medical condition. Never disregard professional
+                medical advice or delay in seeking it because of information you
+                have received through this AI health chat app. If you think you
+                may have a medical emergency, call your doctor or emergency
+                services immediately. Reliance on any information provided by this
+                AI health chat app is solely at your own risk.
+              </Text>
+            </Flex>
+            <Flex
+              borderRadius="10px"
+              direction={"column"}
+              maxW={"90%"}
+              bg="gray.100"
+              h="max-content"
+              p="10px"
+              mb="10px"
+            >
+              <Heading align="center" fontSize="20px" color="gray.600">
+                Our Pledge to Personalized Care
+              </Heading>
+              <Text color="gray.500" px="10px" textAlign={"center"}>
+                At Medmind, we believe that access to reliable healthcare information and personalized support should be readily available to everyone, anytime, and anywhere. Our mission is to empower individuals to take control of their well-being by leveraging the power of artificial intelligence and cutting-edge technology.
+              </Text>
+            </Flex>
           </VStack>
         </VStack>
       )}

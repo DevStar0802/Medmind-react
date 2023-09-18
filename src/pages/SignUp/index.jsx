@@ -13,6 +13,7 @@
   ```
 */
 import ActionPanel from '../../components/ActionPanel'
+import NavigationBar from '../../components/NavigationBar'
 import { Auth } from 'aws-amplify';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useHistory
@@ -21,6 +22,7 @@ import { isTokenValid } from '../../utilities/jwt_utilities';
 export default function SignUp() {
     const [signedUp, setSignedUp] = useState(false);
     const [isVisible, setIsVisible] = useState(true); // Add this state
+    const [cartItemCount, setCartItemCount] = useState(0);
 
     const navigate = useNavigate(); // Get the navigate function from the hook
 
@@ -32,19 +34,19 @@ export default function SignUp() {
 
     useEffect(() => {
         const checkTokenValidity = async () => {
-          try {
-            const isValidToken = await isTokenValid();
-            if (isValidToken) {
-                navigate('/');
+            try {
+                const isValidToken = await isTokenValid();
+                if (isValidToken) {
+                    navigate('/');
+                }
+            } catch (exception) {
+                console.log(exception);
             }
-          } catch (exception) {
-            console.log(exception);
-          }
         };
-      
+
         checkTokenValidity();
-      }, []);
-          const [formData, setFormData] = useState({
+    }, []);
+    const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
@@ -102,6 +104,7 @@ export default function SignUp() {
 
     return (
         <>
+            <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
             {/*
           This example requires updating your template:
   

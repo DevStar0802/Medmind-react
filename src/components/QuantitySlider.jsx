@@ -9,23 +9,15 @@ import {
   
 import React, {useState } from "react";
 
-export default function QuantitySlider() {
-    const [sliderValue, setSliderValue] = useState(23)
-  
-    const labelStyles = {
-      mt: '2',
-      ml: '-2.5',
-      fontSize: 'sm',
-    }
-  
+export default function QuantitySlider({quantity, setQuantity, minValue, maxValue}) {
     return (
       <Box pt={6} pb={2} w="300px">
         <Slider aria-label='slider-ex-6' 
-         min={23}
-         max={273}
-         onChange={(val) => setSliderValue(val)}>
+         min={minValue}
+         max={maxValue}
+         onChange={(val) => setQuantity(val)}>
           <SliderMark
-            value={sliderValue}
+            value={quantity}
             textAlign='center'
             bg='blue.500'
             color='white'
@@ -33,7 +25,7 @@ export default function QuantitySlider() {
             ml='-5'
             w='12'
           >
-            {sliderValue}
+            {quantity}
           </SliderMark>
           <SliderTrack>
             <SliderFilledTrack />
