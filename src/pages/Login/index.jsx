@@ -1,6 +1,7 @@
 import { Auth } from 'aws-amplify';
 import React, { useState, useEffect } from 'react';
 import ForgottenPasswordPanel from '../../components/ForgetPasswordPanel'
+import NavigationBar from '../../components/NavigationBar'
 import { useNavigate } from 'react-router-dom';
 import { isTokenValid } from '../../utilities/jwt_utilities';
 
@@ -8,6 +9,7 @@ export default function Login() {
     const [isVisible, setIsVisible] = useState(true);
     const [hasForgettenPassword, setHasForgottenPassword] = useState(false);
     const navigate = useNavigate();
+    const [cartItemCount, setCartItemCount] = useState(0);
 
     Auth.configure({
         region: 'us-east-1',
@@ -54,6 +56,7 @@ export default function Login() {
 
     return (
         <>
+            <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount}/>
             {hasForgettenPassword && isVisible && <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">

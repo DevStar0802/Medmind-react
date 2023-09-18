@@ -19,9 +19,9 @@ import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
-import QuantitySlider from '../../components/QuantitySlider'
+import NavigationBar from '../../components/NavigationBar'
 
-const SearchDetailPage = () => {
+export default function SearchDetailPage() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState("");
   const [otherPackSizes, setOtherPackSizes] = useState("");
@@ -35,8 +35,62 @@ const SearchDetailPage = () => {
   const [pricesArray, setPricesArray] = useState("");
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
+  const [cartItem, setCartItem] = useState(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  const setCartItemsInLocalStorage = () => {
+    let stringParsedItems = localStorage.getItem('cartItems');
+
+    if (stringParsedItems === null) {
+      stringParsedItems = "[]";
+    }
+
+    let cartItems = JSON.parse(stringParsedItems);
+
+    if (typeof (cartItems) !== typeof ([])) {
+      cartItems = [];
+    }
+
+    // Initialize a variable to check if the item already exists in the cart.
+    let isItemExists = false;
+
+    // Loop through the existing cart items to find a match.
+    for (let i = 0; i < cartItems.length; i++) {
+      if (cartItems[i].ndc === cartItem.ndc) {
+        // If a matching item is found, update its quantity and price.
+        
+        cartItems[i].quantity = parseInt(cartItems[i].quantity);
+        cartItems[i].price = parseInt(cartItems[i].price);
+        cartItems[i].quantity += parseInt(quantity);
+        cartItems[i].price += parseInt(price);
+
+        // Set the variable to true and break the loop.
+        isItemExists = true;
+        break;
+      }
+    }
+
+    // If the item doesn't already exist, push it into the cartItems array.
+    if (!isItemExists) {
+      cartItems.push({ ...cartItem, price: price, quantity: quantity });
+    }
+
+    const cartItemsString = JSON.stringify(cartItems);
+    localStorage.setItem('cartItems', cartItemsString);
+
+    return isItemExists;
+  };
+
+  const addCartItem = (event) => {
+    event.preventDefault();
+    const isItemsExist = setCartItemsInLocalStorage();
+    setCartItemCount(isItemsExist ? cartItemCount : cartItemCount + 1);
+    navigate("/checkout");
+  };
 
   const handleQuantityChange = () => {
+    if (pricesArray == null || pricesArray == undefined || pricesArray != "")
+      return;
 
     pricesArray.map((item) => {
       if (
@@ -78,6 +132,7 @@ const SearchDetailPage = () => {
         }, {});
 
         setPricesArray(objOfObjects[location.state.ndcName].prices);
+        setCartItem(objOfObjects[location.state.ndcName]);
       }
     })
   }, []);
@@ -105,6 +160,8 @@ const SearchDetailPage = () => {
 
   return (
     <>
+      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
+
       <Box>
         <HStack
           justify="end"
@@ -254,21 +311,27 @@ const SearchDetailPage = () => {
                   options={fromOptions}
                   name="from"
                   onChange=""
+                  defaultValue={fromOptions[0]}
                 />
                 <Text>Strength</Text>
                 <RadioGroup
-                  options={fromOptions}
+                  options={strengthOptions}
                   name="from"
                   onChange=""
+                  defaultValue={strengthOptions[0]}
                 />
                 <Text>Quantity</Text>
                 <HStack gap={12}>
-                  <Button onClick={event => {
-                    setQuantity(30);
-                    handleQuantityChange();
-                    }}>30</Button>    
-                  <Button onClick={event => setQuantity(60)}>60</Button>    
-                  <Button onClick={event => setQuantity(90)}>90</Button>    
+                  {pricesArray != "" && <RadioGroup
+                    options={pricesArray.map((item) =>
+                      item.end_package_size.toString()
+                    )}
+                    name="Quantity"
+                    defaultValue={pricesArray[0].end_package_size.toString()}
+                    onChange={(value) => {
+                      setQuantity(value);
+                    }}
+                  />}
                 </HStack>
                 {/* <HStack gap={2}>
                   <RadioGroup
@@ -335,7 +398,8 @@ const SearchDetailPage = () => {
                   rightIcon={<RiShoppingCartLine />}
                   w='300px'
                   mt='30px'
-                  textAlign={"left"}>
+                  textAlign={"left"}
+                  onClick={e => addCartItem(e)}>
                   Add to cart
                 </Button>
               </VStack>
@@ -349,5 +413,3 @@ const SearchDetailPage = () => {
     </>
   );
 };
-
-export default SearchDetailPage;

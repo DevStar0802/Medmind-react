@@ -15,6 +15,7 @@ import {
   VStack,
   resolveStyleConfig,
 } from "@chakra-ui/react";
+import NavigationBar from '../../components/NavigationBar'
 
 
 
@@ -75,6 +76,7 @@ const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const navigate = useNavigate();
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   const getresults = async (searchData) => {
     // setInputValue(searchData);
@@ -160,6 +162,7 @@ const SearchPage = () => {
   };
   return (
     <>
+      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount}/>
       <VStack mt="10px">
         <Heading textAlign="center">Search </Heading>
         <Form onSubmit={(event) => handleSubmitFromSearch(event, combineListsOfLists(results))} style={{ position: "relative" }}>
