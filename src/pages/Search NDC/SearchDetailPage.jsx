@@ -11,15 +11,15 @@ import {
   Input,
   InputRightElement,
   Alert,
-  AlertIcon
+  AlertIcon,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
-import NavigationBar from '../../components/NavigationBar'
+import { MyContext } from "../../utilities/MyContext";
 
 export default function SearchDetailPage() {
   const navigate = useNavigate();
@@ -36,10 +36,10 @@ export default function SearchDetailPage() {
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
   const [cartItem, setCartItem] = useState(null);
-  const [cartItemCount, setCartItemCount] = useState(0);
 
+  const { cartItemCount, setCartItemCount } = useContext(MyContext);
   const setCartItemsInLocalStorage = () => {
-    let stringParsedItems = localStorage.getItem('cartItems');
+    let stringParsedItems = localStorage.getItem("cartItems");
 
     if (stringParsedItems === null) {
       stringParsedItems = "[]";
@@ -47,7 +47,7 @@ export default function SearchDetailPage() {
 
     let cartItems = JSON.parse(stringParsedItems);
 
-    if (typeof (cartItems) !== typeof ([])) {
+    if (typeof cartItems !== typeof []) {
       cartItems = [];
     }
 
@@ -58,7 +58,7 @@ export default function SearchDetailPage() {
     for (let i = 0; i < cartItems.length; i++) {
       if (cartItems[i].ndc === cartItem.ndc) {
         // If a matching item is found, update its quantity and price.
-        
+
         cartItems[i].quantity = parseInt(cartItems[i].quantity);
         cartItems[i].price = parseInt(cartItems[i].price);
         cartItems[i].quantity += parseInt(quantity);
@@ -76,7 +76,7 @@ export default function SearchDetailPage() {
     }
 
     const cartItemsString = JSON.stringify(cartItems);
-    localStorage.setItem('cartItems', cartItemsString);
+    localStorage.setItem("cartItems", cartItemsString);
 
     return isItemExists;
   };
@@ -111,8 +111,10 @@ export default function SearchDetailPage() {
           otherPackSizes >= item.start_package_size &&
           otherPackSizes <= item.end_package_size
         ) {
-          const packDifference = otherPackSizes - item.units_included_in_base_price;
-          let otherPrice = packDifference * item.additional_price_per_unit_after_base;
+          const packDifference =
+            otherPackSizes - item.units_included_in_base_price;
+          let otherPrice =
+            packDifference * item.additional_price_per_unit_after_base;
           let finalPrice = item.base_price + otherPrice;
           setPrice(finalPrice.toFixed(2));
         }
@@ -121,26 +123,31 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    axios.get(`https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`).then((res) => {
-      if (res.data.data.length > 0) {
-        console.log("res.data.data", res.data.data);
-        const objOfObjects = res.data.data.reduce((acc, cur) => {
-          const key = cur.ndc;
-          acc[key] = cur;
+    axios
+      .get(
+        `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
+      )
+      .then((res) => {
+        if (res.data.data.length > 0) {
+          console.log("res.data.data", res.data.data);
+          const objOfObjects = res.data.data.reduce((acc, cur) => {
+            const key = cur.ndc;
+            acc[key] = cur;
 
-          return acc;
-        }, {});
+            return acc;
+          }, {});
 
-        setPricesArray(objOfObjects[location.state.ndcName].prices);
-        setCartItem(objOfObjects[location.state.ndcName]);
-      }
-    })
+          setPricesArray(objOfObjects[location.state.ndcName].prices);
+          setCartItem(objOfObjects[location.state.ndcName]);
+        }
+      });
   }, []);
 
   useEffect(() => {
     if (pricesArray != "") {
       const newMinPackSize = pricesArray[0].end_package_size;
-      const newMaxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
+      const newMaxPackSize =
+        pricesArray[pricesArray.length - 1].end_package_size;
 
       setMinPackSize(newMinPackSize);
       setMaxPackSize(newMaxPackSize);
@@ -160,8 +167,6 @@ export default function SearchDetailPage() {
 
   return (
     <>
-      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
-
       <Box>
         <HStack
           justify="end"
@@ -196,7 +201,9 @@ export default function SearchDetailPage() {
             p={{ base: "2", md: "4" }}
           >
             <VStack align="start">
-              <Heading>{location.state.genericName} ({location.state.tabletName})</Heading>
+              <Heading>
+                {location.state.genericName} ({location.state.tabletName})
+              </Heading>
               <Flex
                 gap={5}
                 align="start"
@@ -213,7 +220,6 @@ export default function SearchDetailPage() {
                 />
 
                 <VStack align="flex-start" ml="2" spacing={"6"}>
-
                   <HStack
                     // gap={1}
 
@@ -231,7 +237,9 @@ export default function SearchDetailPage() {
                       color="rgb(20, 66, 114)"
                     />
                     <Text fontWeight="bold" color="rgb(20, 66, 114)">
-                      {location.state.requiresPrescription ? "Prescription Required" : "Human OTC product"}
+                      {location.state.requiresPrescription
+                        ? "Prescription Required"
+                        : "Human OTC product"}
                     </Text>
                   </HStack>
 
@@ -251,10 +259,11 @@ export default function SearchDetailPage() {
                     w="90%"
                     maxW="600px"
                   >
-                    {
-                      location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
+                    {location.state.requiresPrescription && (
+                      <Text pt="10px" fontWeight="bold" color="blue.700">
                         Contact your doctor for prescription
-                      </Text>}
+                      </Text>
+                    )}
                   </HStack>
                 </VStack>
               </Flex>
@@ -322,16 +331,18 @@ export default function SearchDetailPage() {
                 />
                 <Text>Quantity</Text>
                 <HStack gap={12}>
-                  {pricesArray != "" && <RadioGroup
-                    options={pricesArray.map((item) =>
-                      item.end_package_size.toString()
-                    )}
-                    name="Quantity"
-                    defaultValue={pricesArray[0].end_package_size.toString()}
-                    onChange={(value) => {
-                      setQuantity(value);
-                    }}
-                  />}
+                  {pricesArray != "" && (
+                    <RadioGroup
+                      options={pricesArray.map((item) =>
+                        item.end_package_size.toString()
+                      )}
+                      name="Quantity"
+                      defaultValue={pricesArray[0].end_package_size.toString()}
+                      onChange={(value) => {
+                        setQuantity(value);
+                      }}
+                    />
+                  )}
                 </HStack>
                 {/* <HStack gap={2}>
                   <RadioGroup
@@ -367,7 +378,7 @@ export default function SearchDetailPage() {
                           type="text"
                           placeholder={`From ${minPackSize} - ${maxPackSize}`}
                           borderColor="#7fa8d4"
-                          w='300px'
+                          w="300px"
                           value={otherPackSizes}
                           onChange={(e) => {
                             setOtherPackSizes(e.target.value);
@@ -394,12 +405,14 @@ export default function SearchDetailPage() {
                     </VStack>
                   )}
                 </HStack>
-                <Button colorScheme='blue'
+                <Button
+                  colorScheme="blue"
                   rightIcon={<RiShoppingCartLine />}
-                  w='300px'
-                  mt='30px'
+                  w="300px"
+                  mt="30px"
                   textAlign={"left"}
-                  onClick={e => addCartItem(e)}>
+                  onClick={(e) => addCartItem(e)}
+                >
                   Add to cart
                 </Button>
               </VStack>
@@ -412,4 +425,4 @@ export default function SearchDetailPage() {
       </Box>
     </>
   );
-};
+}
