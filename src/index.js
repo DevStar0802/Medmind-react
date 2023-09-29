@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import MyContextProvider from "./utilities/MyContext";
+import Notification from "./utilities/Notification";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,6 +15,7 @@ root.render(
   <ChakraProvider>
     <BrowserRouter>
       <MyContextProvider>
+        <Notification />
         <PrivateRoutes />
       </MyContextProvider>
     </BrowserRouter>

@@ -2,9 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import { getLocalStorageItem } from "../../utils";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { BsFillArrowLeftSquareFill } from "react-icons/bs";
-import { HStack } from "@chakra-ui/react";
-import RadioGroup from "../radioGroup";
 import { MyContext } from "../../utilities/MyContext";
+
+import { isTokenValid } from "../../utilities/jwt_utilities";
+import { useNavigate } from "react-router-dom";
+import { notify } from "../../utilities/Notification";
 
 export default function Checkout() {
   const [products, setProducts] = useState([]);
@@ -29,6 +31,27 @@ export default function Checkout() {
   useEffect(() => {
     setSubtotal(products.reduce((sum, product) => sum + product.price, 0));
   }, [products]);
+
+  //Check user is logged in
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        const isValidToken = await isTokenValid();
+        if (!isValidToken) {
+          notify("warning", "You are not sign in!");
+          navigate("/");
+        }
+      } catch (exception) {
+        console.log("Error", exception);
+        navigate("/");
+        notify("error", exception);
+      }
+    };
+
+    checkTokenValidity();
+  }, []);
 
   const removeItemFromLocalStorage = (ndc) => {
     const cartItems = getLocalStorageItem("cartItems");

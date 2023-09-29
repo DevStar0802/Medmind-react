@@ -57,13 +57,12 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
       try {
         const isValidToken = await isTokenValid();
         if (isValidToken) {
-          navigate('/');
           setIsLoggedIn(true);
         } else {
           setIsLoggedIn(false);
         }
       } catch (exception) {
-        console.log(exception);
+        console.log("Error", exception);
         setIsLoggedIn(false);
       }
     };
