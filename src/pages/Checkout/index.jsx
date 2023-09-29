@@ -40,12 +40,12 @@ export default function Checkout() {
       try {
         const isValidToken = await isTokenValid();
         if (!isValidToken) {
-          notify("warning", "You are not sign in!");
-          navigate("/");
+          notify("warning", "You are not signed in!");
+          navigate(-1);
         }
       } catch (exception) {
         console.log("Error", exception);
-        navigate("/");
+        navigate(-1);
         notify("error", exception);
       }
     };
