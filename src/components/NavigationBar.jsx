@@ -148,12 +148,6 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
             borderRadius: "lg",
           },
         ]),
-    {
-      path: "/checkout",
-      icon: RiShoppingCartLine,
-      action: () => console.log("Go to cart"),
-      size: "20px",
-    },
   ];
 
   return (
@@ -179,7 +173,7 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
 
         <HStack spacing={5} display={{ base: "none", md: "flex" }}>
           {links.map((link) =>
-            !link.icon ? (
+            link.path ? (
               <NavLink
                 key={link.path}
                 path={link.path}
@@ -194,50 +188,22 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
                 {link.label}
               </NavLink>
             ) : (
-              <NavLink path={link.path} key={link.path}>
-                <HStack
-                  key={link.label}
-                  cursor="pointer"
-                  onClick={link.action}
-                  position="relative"
-                >
-                  {/* Position the wrapper relative */}
-                  {link.icon && <link.icon color="white" size="24px" />}
-                  <Text
-                    {...(link.border
-                      ? {
-                          border: link.border,
-                          px: link.px,
-                          borderRadius: link.borderRadius,
-                        }
-                      : {})}
-                  >
-                    {link.label}
-                  </Text>
-                  {/* Cart Item Count */}
-                  {link.icon === RiShoppingCartLine && (
-                    <Text
-                      position="absolute"
-                      pb="2px"
-                      top="0"
-                      right="0"
-                      bg="red"
-                      color="white"
-                      fontSize="12px"
-                      borderRadius="50%"
-                      w="15px"
-                      h="15px"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      {cartItemCount}
-                    </Text>
-                  )}
-                </HStack>
-              </NavLink>
+              <Text
+                key={link.label}
+                {...(link.border && {
+                  border: link.border,
+                  px: link.px,
+                  borderRadius: link.borderRadius,
+                })}
+                onClick={link.action}
+                margin={0}
+                color={"#fff"}
+              >
+                {link.label}
+              </Text>
             )
           )}
+          {renderCartWithCount()}
         </HStack>
 
         <IconButton
@@ -256,7 +222,6 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
           py={4}
           px={8}
           display={{ md: "none", base: "flex" }}
-          flexDirection={{ base: "column" }}
           align={{ base: "flex-end" }}
           position={{ base: "absolute" }}
           right={4}
@@ -272,38 +237,27 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
               <NavLink
                 key={link.path}
                 path={link.path}
-                {...(link.border
-                  ? {
-                      border: link.border,
-                      px: link.px,
-                      borderRadius: link.borderRadius,
-                    }
-                  : {})}
+                {...(link.border && {
+                  border: link.border,
+                  px: link.px,
+                  borderRadius: link.borderRadius,
+                })}
               >
                 {link.label}
               </NavLink>
             ) : (
-              <HStack
-                key={link.label}
-                cursor="pointer"
+              <Text
+                {...(link.border && {
+                  border: link.border,
+                  px: link.px,
+                  borderRadius: link.borderRadius,
+                })}
                 onClick={link.action}
-                flexDirection={{ base: "column" }}
-                _active={{ opacity: 0.8 }}
+                margin={0}
+                color={"#fff"}
               >
-                {link.icon && <link.icon />}
-                <Text
-                  {...(link.border
-                    ? {
-                        border: link.border,
-                        px: link.px,
-                        borderRadius: link.borderRadius,
-                      }
-                    : {})}
-                  color="white"
-                >
-                  {link.label}
-                </Text>
-              </HStack>
+                {link.label}
+              </Text>
             )
           )}
           {renderCartWithCount()}
