@@ -17,7 +17,7 @@ export default function Checkout() {
 
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
-
+    console.log("#@#", cartItems);
     if (
       cartItems === null ||
       cartItems === undefined ||
@@ -29,7 +29,9 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
-    setSubtotal(products.reduce((sum, product) => sum + product.price, 0));
+    setSubtotal(
+      products.reduce((sum, product) => sum + Number(product.price), 0)
+    );
   }, [products]);
 
   //Check user is logged in
@@ -67,7 +69,7 @@ export default function Checkout() {
 
   const removeItem = (event, ndc) => {
     event.preventDefault();
-    setProducts(products.filter((product) => product.ndc != ndc));
+    setProducts(products.filter((product) => product.ndc !== ndc));
     setCartItemCount(cartItemCount - 1);
     removeItemFromLocalStorage(ndc);
   };
@@ -80,111 +82,86 @@ export default function Checkout() {
           <div className="mx-auto w-full max-w-lg">
             <h2 className="sr-only">Order summary</h2>
             <div className="flow-root">
-              <ul role="list" className="-my-6 divide-y divide-gray-200">
-                {products == null ||
-                  products == undefined ||
-                  (products.length == 0 && (
-                    <li className="md:py-48 pt-28">
-                      <div>
-                        <h2 className="text-center">
-                          You have no items in your shopping cart
-                        </h2>
-                        <a
-                          href="/"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginTop: "30px",
-                          }}
-                          className="ml-32 md:ml-36"
-                        >
-                          <BsFillArrowLeftSquareFill
-                            size="26px"
-                            style={{ marginRight: "10px" }}
-                          />
-                          Go back to home
-                        </a>
-                      </div>
-                    </li>
-                  ))}
-                {products.map((product) => (
-                  <li key={product.id} className="flex space-x-6 py-6">
-                    <img
-                      src={product.image_url}
-                      className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
-                    />
-                    <div className="flex-auto">
-                      <div className="space-y-1 sm:flex sm:items-start sm:justify-between sm:space-x-6">
-                        <div className="flex-auto space-y-1 text-sm font-medium">
-                          <h3 className="text-gray-900">
-                            <a href="/">
-                              {product.generic_name} ({product.product_name})
-                            </a>
-                          </h3>
-                          <p className="text-gray-900">
-                            ${product.price.toFixed(2)}
-                          </p>
-                          <p className="text-gray-500">
-                            {product.quantity} units
-                          </p>
-                          <p className="hidden text-gray-500 sm:block">
-                            {product.size}
-                          </p>
-                        </div>
-                        <div className="flex flex-none space-x-4">
-                          <button
-                            type="button"
-                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                          >
-                            Edit
-                          </button>
-                          {/* <VStack>
-                            <InputGroup>
-                              <Input
-                                pr="4.5rem"
-                                type="text"
-                                placeholder={`From ${minPackSize} - ${maxPackSize}`}
-                                borderColor="#7fa8d4"
-                                w='300px'
-                                value={otherPackSizes}
-                                onChange={(e) => {
-                                  console.log(e.target.value);
-                                }}
-                              />
-                              <InputRightElement width="3.5rem">
-                                <Box
-                                  cursor="pointer"
-                                  color="#7fa8d4"
-                                  onClick={() => handleQuantityChange()}
-                                >
-                                  Done
-                                </Box>
-                              </InputRightElement>
-                            </InputGroup>
-                          </VStack> */}
-
-                          <div className="flex border-l border-gray-300 pl-4">
+              <ul className="-my-6 divide-y divide-gray-200">
+                {products.length ? (
+                  products.map((product) => (
+                    <li key={product.id} className="flex space-x-6 py-6">
+                      <img
+                        src={product.image_url}
+                        className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
+                        alt="drug label"
+                      />
+                      <div className="flex-auto">
+                        <div className="space-y-1 sm:flex sm:items-start sm:justify-between sm:space-x-6">
+                          <div className="flex-auto space-y-1 text-sm font-medium">
+                            <h3 className="text-gray-900">
+                              <a href="/">
+                                {product.generic_name} ({product.product_name})
+                              </a>
+                            </h3>
+                            <p className="text-gray-900">
+                              ${Number(product.price).toFixed(2)}
+                            </p>
+                            <p className="text-gray-500">
+                              {product.quantity} units
+                            </p>
+                            <p className="hidden text-gray-500 sm:block">
+                              {product.size}
+                            </p>
+                          </div>
+                          <div className="flex flex-none space-x-4">
                             <button
                               type="button"
                               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                              onClick={(event) =>
-                                removeItem(event, product.ndc)
-                              }
                             >
-                              Remove
+                              Edit
                             </button>
+                            <div className="flex border-l border-gray-300 pl-4">
+                              <button
+                                type="button"
+                                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                                onClick={(event) =>
+                                  removeItem(event, product.ndc)
+                                }
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
+                    </li>
+                  ))
+                ) : (
+                  <li className="md:py-48 pt-28">
+                    <div>
+                      <h2 className="text-center">
+                        You have no items in your shopping cart
+                      </h2>
+                      <a
+                        href="/"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: "30px",
+                        }}
+                        className="ml-32 md:ml-36"
+                      >
+                        <BsFillArrowLeftSquareFill
+                          size="26px"
+                          style={{ marginRight: "10px" }}
+                        />
+                        Go back to home
+                      </a>
                     </div>
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           </div>
 
           <div className="mx-auto w-full max-w-lg">
-            {subTotal != 0 && (
+            {!subTotal && (
               <>
                 <dl className="mt-10 space-y-6 text-sm font-medium text-gray-500">
                   <div className="flex justify-between">
