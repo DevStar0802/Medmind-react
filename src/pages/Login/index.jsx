@@ -58,7 +58,6 @@ export default function Login() {
 
   return (
     <>
-      Thanks
       {hasForgettenPassword && isVisible && (
         <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>
       )}

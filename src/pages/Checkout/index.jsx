@@ -17,7 +17,6 @@ export default function Checkout() {
 
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
-    console.log("#@#", cartItems);
     if (
       cartItems === null ||
       cartItems === undefined ||
@@ -161,7 +160,7 @@ export default function Checkout() {
           </div>
 
           <div className="mx-auto w-full max-w-lg">
-            {!subTotal && (
+            {subTotal !== 0 && (
               <>
                 <dl className="mt-10 space-y-6 text-sm font-medium text-gray-500">
                   <div className="flex justify-between">
