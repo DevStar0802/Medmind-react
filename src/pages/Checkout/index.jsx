@@ -17,7 +17,6 @@ export default function Checkout() {
 
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
-    console.log("#@#", cartItems);
     if (
       cartItems === null ||
       cartItems === undefined ||
@@ -113,6 +112,21 @@ export default function Checkout() {
                             <button
                               type="button"
                               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                              onClick={() =>
+                                navigate("/searchDetail", {
+                                  state: {
+                                    fromName: product.form,
+                                    ndcName: product.ndc,
+                                    tabletName: product.product_name,
+                                    genericName: product.generic_name,
+                                    strengthName: product.strength,
+                                    imageName: product.image_url,
+                                    requiresPrescription:
+                                      product.requires_prescription,
+                                    quantity: product.quantity,
+                                  },
+                                })
+                              }
                             >
                               Edit
                             </button>
@@ -161,7 +175,7 @@ export default function Checkout() {
           </div>
 
           <div className="mx-auto w-full max-w-lg">
-            {!subTotal && (
+            {subTotal !== 0 && (
               <>
                 <dl className="mt-10 space-y-6 text-sm font-medium text-gray-500">
                   <div className="flex justify-between">

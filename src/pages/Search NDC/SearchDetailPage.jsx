@@ -123,6 +123,14 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
+    if (location.state?.quantity) {
+      setQuantity(location.state.quantity);
+    } else {
+      setQuantity(pricesArray[0].end_package_size.toString());
+    }
+  }, [location.state?.quantity, pricesArray]);
+
+  useEffect(() => {
     axios
       .get(
         `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
@@ -151,14 +159,13 @@ export default function SearchDetailPage() {
 
       setMinPackSize(newMinPackSize);
       setMaxPackSize(newMaxPackSize);
-      setQuantity(pricesArray[0].units_included_in_base_price.toString());
     }
   }, [pricesArray]);
 
   useEffect(() => {
     if (pricesArray != "") {
       pricesArray.map((item) => {
-        if (item.units_included_in_base_price.toString() === quantity) {
+        if (item.end_package_size.toString() === quantity) {
           setPrice(item.base_price);
         }
       });
@@ -331,13 +338,13 @@ export default function SearchDetailPage() {
                 />
                 <Text>Quantity</Text>
                 <HStack gap={12}>
-                  {pricesArray != "" && (
+                  {pricesArray !== "" && (
                     <RadioGroup
                       options={pricesArray.map((item) =>
                         item.end_package_size.toString()
                       )}
                       name="Quantity"
-                      defaultValue={pricesArray[0].end_package_size.toString()}
+                      defaultValue={quantity}
                       onChange={(value) => {
                         setQuantity(value);
                       }}
