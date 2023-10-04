@@ -124,7 +124,9 @@ export default function SearchDetailPage() {
 
   useEffect(() => {
     if (location.state.quantity) setQuantity(location.state.quantity);
-  }, [location.state.quantity]);
+    else setQuantity(pricesArray[0].end_package_size.toString());
+  }, [location.state.quantity, pricesArray]);
+
   useEffect(() => {
     axios
       .get(
@@ -154,14 +156,13 @@ export default function SearchDetailPage() {
 
       setMinPackSize(newMinPackSize);
       setMaxPackSize(newMaxPackSize);
-      setQuantity(pricesArray[0].units_included_in_base_price.toString());
     }
   }, [pricesArray]);
 
   useEffect(() => {
     if (pricesArray != "") {
       pricesArray.map((item) => {
-        if (item.units_included_in_base_price.toString() === quantity) {
+        if (item.end_package_size.toString() === quantity) {
           setPrice(item.base_price);
         }
       });
@@ -340,11 +341,7 @@ export default function SearchDetailPage() {
                         item.end_package_size.toString()
                       )}
                       name="Quantity"
-                      defaultValue={
-                        quantity
-                          ? quantity
-                          : pricesArray[0].end_package_size.toString()
-                      }
+                      defaultValue={quantity}
                       onChange={(value) => {
                         setQuantity(value);
                       }}
