@@ -123,6 +123,9 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
+    if (location.state.quantity) setQuantity(location.state.quantity);
+  }, [location.state.quantity]);
+  useEffect(() => {
     axios
       .get(
         `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
@@ -331,13 +334,17 @@ export default function SearchDetailPage() {
                 />
                 <Text>Quantity</Text>
                 <HStack gap={12}>
-                  {pricesArray != "" && (
+                  {pricesArray !== "" && (
                     <RadioGroup
                       options={pricesArray.map((item) =>
                         item.end_package_size.toString()
                       )}
                       name="Quantity"
-                      defaultValue={pricesArray[0].end_package_size.toString()}
+                      defaultValue={
+                        quantity
+                          ? quantity
+                          : pricesArray[0].end_package_size.toString()
+                      }
                       onChange={(value) => {
                         setQuantity(value);
                       }}

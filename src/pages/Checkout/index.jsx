@@ -112,6 +112,21 @@ export default function Checkout() {
                             <button
                               type="button"
                               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                              onClick={() =>
+                                navigate("/searchDetail", {
+                                  state: {
+                                    fromName: product.form,
+                                    ndcName: product.ndc,
+                                    tabletName: product.product_name,
+                                    genericName: product.generic_name,
+                                    strengthName: product.strength,
+                                    imageName: product.image_url,
+                                    requiresPrescription:
+                                      product.requires_prescription,
+                                    quantity: product.quantity,
+                                  },
+                                })
+                              }
                             >
                               Edit
                             </button>
