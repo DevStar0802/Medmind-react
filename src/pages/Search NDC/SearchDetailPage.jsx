@@ -123,12 +123,14 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    if (location.state?.quantity) {
-      setQuantity(location.state.quantity);
-    } else {
-      setQuantity(pricesArray[0].end_package_size.toString());
+    if (pricesArray !== "") {
+      if (location.state.quantity) {
+        setQuantity(location.state.quantity);
+      } else {
+        setQuantity(pricesArray[0].end_package_size.toString());
+      }
     }
-  }, [location.state?.quantity, pricesArray]);
+  }, [location.state.quantity, pricesArray]);
 
   useEffect(() => {
     axios
