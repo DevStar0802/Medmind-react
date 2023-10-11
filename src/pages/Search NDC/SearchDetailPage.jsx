@@ -154,7 +154,7 @@ export default function SearchDetailPage() {
   }, []);
 
   useEffect(() => {
-    if (pricesArray != "") {
+    if (pricesArray !== "") {
       const newMinPackSize = pricesArray[0].end_package_size;
       const newMaxPackSize =
         pricesArray[pricesArray.length - 1].end_package_size;
@@ -165,7 +165,7 @@ export default function SearchDetailPage() {
   }, [pricesArray]);
 
   useEffect(() => {
-    if (pricesArray != "") {
+    if (pricesArray !== "") {
       pricesArray.map((item) => {
         if (item.end_package_size.toString() === quantity) {
           setPrice(item.base_price);
