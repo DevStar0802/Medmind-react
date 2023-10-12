@@ -14,7 +14,8 @@ export default function Checkout() {
   const [service, setService] = useState(8);
   const [shipping, setShipping] = useState(14);
   const { cartItemCount, setCartItemCount } = useContext(MyContext);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
     if (
@@ -34,25 +35,23 @@ export default function Checkout() {
   }, [products]);
 
   //Check user is logged in
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkTokenValidity = async () => {
-      try {
-        const isValidToken = await isTokenValid();
-        if (!isValidToken) {
-          notify("warning", "You are not signed in!");
-          navigate(-1);
-        }
-      } catch (exception) {
-        console.log("Error", exception);
-        navigate(-1);
-        notify("error", exception);
+  const checkTokenValidity = async () => {
+    try {
+      const isValidToken = await isTokenValid();
+      if (!isValidToken) {
+        notify("warning", "You are not signed in!");
+        navigate("/login");
       }
-    };
+    } catch (exception) {
+      console.log("Error", exception);
+      navigate("/login");
+      notify("error", exception);
+    }
+  };
 
-    checkTokenValidity();
-  }, []);
+  const handleClickCheckout = () => {
+    checkTokenValidity()
+  }
 
   const removeItemFromLocalStorage = (ndc) => {
     const cartItems = getLocalStorageItem("cartItems");
@@ -200,6 +199,7 @@ export default function Checkout() {
                 <button
                   type="button"
                   className="flex w-full items-center justify-center rounded-md border border-transparent bg-black py-2 text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                  onClick={handleClickCheckout}
                 >
                   Proceed to checkout &nbsp;
                   <RiShoppingCartLine color="white" size="24px" />
