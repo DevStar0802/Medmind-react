@@ -12,6 +12,7 @@ import {
   InputRightElement,
   Alert,
   AlertIcon,
+  StackDivider,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -20,6 +21,8 @@ import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
 import { MyContext } from "../../utilities/MyContext";
+import { getDrugContents } from "../../utils";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 
 export default function SearchDetailPage() {
   const navigate = useNavigate();
@@ -30,8 +33,8 @@ export default function SearchDetailPage() {
   const [otherInput, setOtherInput] = useState(false);
   const [alert, setAlert] = useState(false);
   const location = useLocation();
-  const fromOptions = [location.state.fromName];
-  const strengthOptions = [location.state.strengthName];
+  const fromOptions = [location.state?.fromName];
+  const strengthOptions = [location.state?.strengthName];
   const [pricesArray, setPricesArray] = useState("");
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
@@ -136,6 +139,7 @@ export default function SearchDetailPage() {
     axios
       .get(
         `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
+        // `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=0006-0106-54`
       )
       .then((res) => {
         if (res.data.data.length > 0) {
@@ -173,6 +177,44 @@ export default function SearchDetailPage() {
       });
     }
   }, [quantity]);
+
+  const [drugContents, setDrugContents] = useState({
+    Indications_and_Usage: "",
+    Contraindications: "",
+    Warnings: "",
+    Precautions: "",
+    Adverse_Reactions: "",
+    Overdosage: "",
+    Dosage_and_Administration: "",
+    How_Supplied: "",
+  });
+
+  const [selectedKey, setSelectedKey] = useState("");
+
+  const getDrugContents = async () => {
+    const res = await axios.get("http://65.108.24.122:1337/api/drugs");
+    console.log("Drug_________________!", res.data);
+    setDrugContents({
+      Indications_and_Usage: res.data.data[0].attributes.INDICATIONS_AND_USAGE,
+      Contraindications: res.data.data[0].attributes.CONTRAINDICATIONS,
+      Warnings: res.data.data[0].attributes.WARNINGS,
+      Precautions: res.data.data[0].attributes.PRECAUTIONS,
+      Adverse_Reactions: res.data.data[0].attributes.ADVERSE_REACTIONS,
+      Overdosage: res.data.data[0].attributes.OVERDOSAGE,
+      Dosage_and_Administration:
+        res.data.data[0].attributes.DOSAGE_AND_ADMINISTRATION,
+      How_Supplied: res.data.data[0].attributes.HOW_SUPPLIED,
+    });
+    setSelectedKey("Indications_and_Usage");
+  };
+
+  useEffect(() => {
+    getDrugContents();
+  }, []);
+
+  const handleChangeContetnItem = (key) => {
+    setSelectedKey(key);
+  };
 
   return (
     <>
@@ -317,9 +359,9 @@ export default function SearchDetailPage() {
             >
               <VStack gap={1} align="start">
                 <HStack align="baseline">
-                  <Text>{location.state.fromName}</Text>
+                  <Text>{location.state?.fromName}</Text>
                   <Text>•</Text>
-                  <Text>{location.state.strengthName}</Text>
+                  <Text>{location.state?.strengthName}</Text>
                   <Text>•</Text>
                   <Text>{quantity} count</Text>
                 </HStack>
@@ -431,6 +473,55 @@ export default function SearchDetailPage() {
             </Text>
           </VStack>
         </Flex>
+        <HStack spacing={8} width="100%" align="start" p="30px">
+          <Flex
+            justify="space-between"
+            borderRadius="3px"
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            w="20%"
+            borderLeft="5px solid #17c5e1"
+          >
+            <VStack
+              align="center"
+              divider={
+                <StackDivider borderColor="gray.200" my="0px!important" />
+              }
+              w="100%"
+            >
+              {drugContents &&
+                Object.keys(drugContents).map((key, index) => (
+                  <Box
+                    _hover={{
+                      bg: "gray.400",
+                    }}
+                    bg={`${selectedKey === key ? "gray.400" : "none"}`}
+                    w="100%"
+                    h="100%"
+                    p="20px"
+                    key={index}
+                    onClick={() => handleChangeContetnItem(key)}
+                  >
+                    <Text fontSize={22} m={0} cursor="pointer">
+                      {key.split("_").join(" ")}
+                    </Text>
+                  </Box>
+                ))}
+            </VStack>
+          </Flex>
+          <Flex
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            p="20px"
+            flex={1}
+            minH="300px"
+            h="auto"
+            borderLeft="5px solid #17c5e1"
+          >
+            <Box>
+              <h2>{selectedKey.split("_").join(" ")}</h2>
+              <MarkdownPreview source={drugContents[selectedKey]} />
+            </Box>
+          </Flex>
+        </HStack>
       </Box>
     </>
   );

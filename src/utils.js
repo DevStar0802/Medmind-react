@@ -1,25 +1,29 @@
+import axios from "axios";
+
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
 export const hitChatGpt = async (messageArray, setMessages) => {
   try {
-    // 1. Do server-side rendering so that we don't expose our endpoiint 
+    // 1. Do server-side rendering so that we don't expose our endpoiint
     // 2. IP blacklisting from cloud run
-    const response = await fetch("https://openai-service-ur2rlqmbdq-ue.a.run.app/generate_response", {
-
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify({
-        messages: messageArray,
-      }),
-    });
+    const response = await fetch(
+      "https://openai-service-ur2rlqmbdq-ue.a.run.app/generate_response",
+      {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify({
+          messages: messageArray,
+        }),
+      }
+    );
 
     const content_message = {
       role: "assistant",
       content: "",
     };
 
-    let newMessageArray = [...messageArray]
+    let newMessageArray = [...messageArray];
     newMessageArray.push(content_message);
     setMessages(newMessageArray);
 
@@ -36,8 +40,9 @@ export const hitChatGpt = async (messageArray, setMessages) => {
 
       try {
         let decodedValue = textDecoder.decode(value);
-        let updatedMessageArray = [...newMessageArray]
-        updatedMessageArray[updatedMessageArray.length - 1].content += decodedValue;
+        let updatedMessageArray = [...newMessageArray];
+        updatedMessageArray[updatedMessageArray.length - 1].content +=
+          decodedValue;
         setMessages(updatedMessageArray);
       } catch (exception) {
         console.error(exception);
@@ -45,10 +50,10 @@ export const hitChatGpt = async (messageArray, setMessages) => {
           role: "assistant",
           content: "Something wrong happened, please try again later..",
         };
-    
-        let newMessageArray = [...messageArray]
+
+        let newMessageArray = [...messageArray];
         newMessageArray.push(content_message);
-        setMessages(newMessageArray);    
+        setMessages(newMessageArray);
       }
 
       pump(); // Call pump again to keep reading the stream
@@ -56,13 +61,13 @@ export const hitChatGpt = async (messageArray, setMessages) => {
 
     pump(); // Start the stream processing
   } catch (error) {
-    console.error('Failed to fetch from the API', error);
+    console.error("Failed to fetch from the API", error);
     const content_message = {
       role: "assistant",
       content: "Something wrong happened, please try again later..",
     };
 
-    let newMessageArray = [...messageArray]
+    let newMessageArray = [...messageArray];
     newMessageArray.push(content_message);
     setMessages(newMessageArray);
   }
@@ -71,4 +76,9 @@ export const hitChatGpt = async (messageArray, setMessages) => {
 export const getLocalStorageItem = (name) => {
   const item = localStorage.getItem(name);
   return item ? JSON.parse(item) : null;
+};
+
+export const getDrugContents = async () => {
+  const res = await axios.get("http://65.108.24.122:1337/api/drugs");
+  return res.data;
 };
