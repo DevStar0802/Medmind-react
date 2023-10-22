@@ -8,6 +8,7 @@ import Login from "../pages/Login/index.jsx";
 import SignUp from "../pages/SignUp/index.jsx";
 import Cart from "../pages/Cart/index.jsx";
 import Checkout from "../pages/Checkout/index.jsx";
+import NavgiationBar from "../components/NavigationBar";
 
 const PrivateRoutes = () => {
   return (

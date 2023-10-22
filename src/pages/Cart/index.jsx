@@ -1,6 +1,6 @@
 import NavigationBar from '../../components/NavigationBar'
 import EditQuantityModal from '../../components/EditQuantityModal'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getLocalStorageItem } from '../../utils'
 import { RiShoppingCartLine } from 'react-icons/ri';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
@@ -48,6 +48,14 @@ export default function Cart() {
     localStorage.setItem('cartItems', updatedCartItemsJSON);
   }
 
+  const getProductPrice = (product) => {
+    if (product == null || product.price == null) {
+      return 0;
+    }
+
+    return products.price.toFixed(2);
+  }
+
   const saveNewQuantity = (ndc, newQuantity) => {
     const updatedProducts = products.map(product => {
       if (product.ndc === ndc) {
@@ -69,7 +77,6 @@ export default function Cart() {
 
   return (
     <div className="bg-white">
-      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
       <main className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 sm:pb-24 sm:pt-8 lg:px-8 xl:px-2 xl:pt-14">
         <h1 className="sr-only">Checkout</h1>
         <div className="mx-auto grid max-w-lg grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">

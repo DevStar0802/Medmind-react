@@ -162,7 +162,6 @@ const SearchPage = () => {
   };
   return (
     <>
-      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount}/>
       <VStack mt="10px">
         <Heading textAlign="center">Search </Heading>
         <Form onSubmit={(event) => handleSubmitFromSearch(event, combineListsOfLists(results))} style={{ position: "relative" }}>

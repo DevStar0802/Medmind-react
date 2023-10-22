@@ -19,7 +19,6 @@ const AboutPage = () => {
 
     return (
         <>
-            <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
             <Box
                 h="full"
                 w="full"
