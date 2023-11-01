@@ -22,7 +22,7 @@ const PrivateRoutes = () => {
       <Routes>
         <Route path="/*" element={<MainPage />} />
         <Route path="/searchPage" element={<SearchPage />} />
-        <Route path="/searchDetail" element={<SearchDetailPage />} />
+        <Route path="/drug/:ndc" element={<SearchDetailPage />} />
         <Route path="/aboutPage" element={<AboutPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
