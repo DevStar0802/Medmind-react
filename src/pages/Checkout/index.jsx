@@ -15,7 +15,7 @@ export default function Checkout() {
   const [shipping, setShipping] = useState(14);
   const { cartItemCount, setCartItemCount } = useContext(MyContext);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
     if (
@@ -50,8 +50,8 @@ export default function Checkout() {
   };
 
   const handleClickCheckout = () => {
-    checkTokenValidity()
-  }
+    checkTokenValidity();
+  };
 
   const removeItemFromLocalStorage = (ndc) => {
     const cartItems = getLocalStorageItem("cartItems");
@@ -112,16 +112,8 @@ export default function Checkout() {
                               type="button"
                               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                               onClick={() =>
-                                navigate("/searchDetail", {
+                                navigate(`/drug/${product.ndc}`, {
                                   state: {
-                                    fromName: product.form,
-                                    ndcName: product.ndc,
-                                    tabletName: product.product_name,
-                                    genericName: product.generic_name,
-                                    strengthName: product.strength,
-                                    imageName: product.image_url,
-                                    requiresPrescription:
-                                      product.requires_prescription,
                                     quantity: product.quantity,
                                   },
                                 })

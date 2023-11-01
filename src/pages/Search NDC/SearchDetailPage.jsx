@@ -15,32 +15,31 @@ import {
   StackDivider,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
 import { MyContext } from "../../utilities/MyContext";
+
 import { getDrugContents } from "../../utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 
 export default function SearchDetailPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { ndc } = useParams();
   const [quantity, setQuantity] = useState("");
   const [otherPackSizes, setOtherPackSizes] = useState("");
   const [price, setPrice] = useState("");
-  const [otherQuantity, setOtherQuantity] = useState();
   const [otherInput, setOtherInput] = useState(false);
   const [alert, setAlert] = useState(false);
-  const location = useLocation();
-  const fromOptions = [location.state?.fromName];
-  const strengthOptions = [location.state?.strengthName];
-  const [pricesArray, setPricesArray] = useState("");
+  const [pricesArray, setPricesArray] = useState([]);
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
   const [cartItem, setCartItem] = useState(null);
-
   const { cartItemCount, setCartItemCount } = useContext(MyContext);
+
   const setCartItemsInLocalStorage = () => {
     let stringParsedItems = localStorage.getItem("cartItems");
 
@@ -92,8 +91,7 @@ export default function SearchDetailPage() {
   };
 
   const handleQuantityChange = () => {
-    if (pricesArray == null || pricesArray == undefined || pricesArray != "")
-      return;
+    if (!pricesArray.length) return;
 
     pricesArray.map((item) => {
       if (
@@ -126,20 +124,10 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    if (pricesArray !== "") {
-      if (location.state.quantity) {
-        setQuantity(location.state.quantity);
-      } else {
-        setQuantity(pricesArray[0].end_package_size.toString());
-      }
-    }
-  }, [location.state.quantity, pricesArray]);
-
-  useEffect(() => {
     axios
       .get(
-        `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
-        // `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=0006-0106-54`
+        `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${ndc}`
+        // `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=0006010654`
       )
       .then((res) => {
         if (res.data.data.length > 0) {
@@ -147,36 +135,42 @@ export default function SearchDetailPage() {
           const objOfObjects = res.data.data.reduce((acc, cur) => {
             const key = cur.ndc;
             acc[key] = cur;
-
             return acc;
           }, {});
 
-          setPricesArray(objOfObjects[location.state.ndcName].prices);
-          setCartItem(objOfObjects[location.state.ndcName]);
+          setPricesArray(objOfObjects[ndc.replace(/-/g, "")].prices);
+          setCartItem(objOfObjects[ndc.replace(/-/g, "")]);
         }
       });
   }, []);
 
   useEffect(() => {
-    if (pricesArray !== "") {
+    if (pricesArray.length) {
+      if (location.state && location.state.quantity)
+        setQuantity(location.state.quantity.toString());
+      else setQuantity(pricesArray[0].end_package_size.toString());
+    }
+  }, [pricesArray, location.state]);
+
+  useEffect(() => {
+    if (pricesArray.length) {
       const newMinPackSize = pricesArray[0].end_package_size;
       const newMaxPackSize =
         pricesArray[pricesArray.length - 1].end_package_size;
-
       setMinPackSize(newMinPackSize);
       setMaxPackSize(newMaxPackSize);
     }
   }, [pricesArray]);
 
   useEffect(() => {
-    if (pricesArray !== "") {
+    if (pricesArray.length) {
       pricesArray.map((item) => {
         if (item.end_package_size.toString() === quantity) {
           setPrice(item.base_price);
         }
       });
     }
-  }, [quantity]);
+  }, [quantity, pricesArray]);
 
   const [drugContents, setDrugContents] = useState({
     Indications_and_Usage: "",
@@ -192,7 +186,9 @@ export default function SearchDetailPage() {
   const [selectedKey, setSelectedKey] = useState("");
 
   const getDrugContents = async () => {
-    const res = await axios.get("http://65.108.24.122:1337/api/drugs");
+    const res = await axios.get(
+      "http://3.93.200.27:1337/api/drugs?filters[NDC][$startsWith]=50090-0481"
+    );
     console.log("Drug_________________!", res.data);
     setDrugContents({
       Indications_and_Usage: res.data.data[0].attributes.INDICATIONS_AND_USAGE,
@@ -209,10 +205,11 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    getDrugContents();
-  }, []);
+    // getDrugContents();
+    console.log(quantity, quantity.toString());
+  }, [quantity]);
 
-  const handleChangeContetnItem = (key) => {
+  const handleChangeContentItem = (key) => {
     setSelectedKey(key);
   };
 
@@ -236,292 +233,214 @@ export default function SearchDetailPage() {
             Back
           </Button>
         </HStack>
-        <Flex
-          m="30px"
-          p="20px"
-          justify="space-evenly"
-          // wrap="wrap"
-          borderRadius="10px"
-          direction={["column", "column", "column", "row", "row"]}
-          // mt="60px"
-          boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-        >
-          <VStack
-            align="start"
+        {cartItem && (
+          <Flex
+            m="30px"
+            p="20px"
             justify="space-evenly"
-            p={{ base: "2", md: "4" }}
+            borderRadius="10px"
+            direction={["column", "column", "column", "row", "row"]}
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
           >
-            <VStack align="start">
-              <Heading>
-                {location.state.genericName} ({location.state.tabletName})
-              </Heading>
-              <Flex
-                gap={5}
-                align="start"
-                direction={["column", "column", "row", "row", "row"]}
-              >
-                <Image
-                  src={location.state.imageName}
-                  h="250px"
-                  w="250px"
-                  borderRadius="10px"
-                  boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-                  // border="1px solid"
-                  p="5px"
-                />
-
-                <VStack align="flex-start" ml="2" spacing={"6"}>
-                  <HStack
-                    // gap={1}
-
-                    bg="gray.100"
-                    p="5px"
-                    // w="600px"
-                    h="50px"
+            <VStack
+              align="start"
+              justify="space-evenly"
+              p={{ base: "2", md: "4" }}
+            >
+              <VStack align="start">
+                <Heading>
+                  {cartItem.generic_name} ({cartItem.product_name})
+                </Heading>
+                <Flex
+                  gap={5}
+                  align="start"
+                  direction={["column", "column", "row", "row", "row"]}
+                >
+                  <Image
+                    src={cartItem.image_url}
+                    h="250px"
+                    w="250px"
                     borderRadius="10px"
-                    // w={["200px", "250px", "300px", "600px"]}
-                    w="90%"
-                    maxW="600px"
-                  >
-                    <FaPrescription
-                      style={{ margin: "0 0 0 10px" }}
-                      color="rgb(20, 66, 114)"
-                    />
-                    <Text fontWeight="bold" color="rgb(20, 66, 114)">
-                      {location.state.requiresPrescription
-                        ? "Prescription Required"
-                        : "Human OTC product"}
+                    boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                    p="5px"
+                  />
+
+                  <VStack align="flex-start" ml="2" spacing={"6"}>
+                    <HStack
+                      bg="gray.100"
+                      p="5px"
+                      w="90%"
+                      h="50px"
+                      maxW="600px"
+                      borderRadius="10px"
+                    >
+                      <FaPrescription
+                        style={{ margin: "0 0 0 10px" }}
+                        color="rgb(20, 66, 114)"
+                      />
+                      <Text fontWeight="bold" color="rgb(20, 66, 114)">
+                        {cartItem.requires_prescription
+                          ? "Prescription Required"
+                          : "Human OTC product"}
+                      </Text>
+                    </HStack>
+
+                    <Text fontWeight="bold" align="center">
+                      Why does my medication look different ?
                     </Text>
+                    <Text maxW="600px">
+                      Different manufacturers produce different looking
+                      medications to distinguish themselves from one another,
+                      but the drug,strength, and ingredients are the same.
+                    </Text>
+                    <HStack
+                      bg="gray.100"
+                      borderRadius="10px"
+                      justify="center"
+                      w="90%"
+                      maxW="600px"
+                    >
+                      {cartItem.requires_prescription && (
+                        <Text pt="10px" fontWeight="bold" color="blue.700">
+                          Contact your doctor for prescription
+                        </Text>
+                      )}
+                    </HStack>
+                  </VStack>
+                </Flex>
+              </VStack>
+              <VStack align="start" w="full">
+                <Heading fontSize="30px">Transparent pricing </Heading>
+                <VStack
+                  bg="blue.50"
+                  p="30px"
+                  borderRadius="10px"
+                  w={{ base: "100%", md: "100%" }}
+                >
+                  <Text>
+                    We think you should know how much your medications cost and
+                    why.
+                  </Text>
+                  <Text>
+                    A{" "}
+                    <strong>
+                      {quantity} count supply of {cartItem.strength}
+                      {cartItem.product_name}
+                    </strong>{" "}
+                    will cost: <strong>${price}</strong>
+                  </Text>
+                </VStack>
+              </VStack>
+            </VStack>
+            <VStack align="start">
+              <Heading fontSize="23px" ms="10px">
+                Price Calculator
+              </Heading>
+              <VStack
+                flexWrap="wrap"
+                borderRadius="10px"
+                border="1px solid rgb(191, 204, 181)"
+                p="20px"
+                maxW={{ base: "100%", md: "400px" }}
+                w="full"
+                mx="50px"
+              >
+                <VStack gap={1} align="start">
+                  <HStack align="baseline">
+                    <p>
+                      {cartItem.form} • {cartItem.strength} • {quantity} count
+                    </p>
                   </HStack>
 
-                  <Text fontWeight="bold" align="center">
-                    Why does my medication look different ?
-                  </Text>
-                  <Text maxW="600px">
-                    Different manufacturers produce different looking
-                    medications to distinguish themselves from one another, but
-                    the drug,strength, and ingredients are the same.
-                  </Text>
-                  <HStack
-                    bg="gray.100"
-                    borderRadius="10px"
-                    // w="600px"
-                    justify="center"
-                    w="90%"
-                    maxW="600px"
-                  >
-                    {location.state.requiresPrescription && (
-                      <Text pt="10px" fontWeight="bold" color="blue.700">
-                        Contact your doctor for prescription
-                      </Text>
+                  <Heading>${price}</Heading>
+
+                  <Text>Form</Text>
+                  <RadioGroup
+                    options={[cartItem.form]}
+                    name="from"
+                    defaultValue={cartItem.form}
+                  />
+
+                  <Text>Strength</Text>
+                  <RadioGroup
+                    options={[cartItem.strength]}
+                    name="from"
+                    defaultValue={cartItem.strength}
+                  />
+
+                  <Text>Quantity</Text>
+                  <HStack gap={12}>
+                    {pricesArray.length && quantity && (
+                      <RadioGroup
+                        options={pricesArray.map((item) =>
+                          item.end_package_size.toString()
+                        )}
+                        name="Quantity"
+                        defaultValue={quantity}
+                        onChange={(value) => {
+                          setQuantity(value);
+                        }}
+                      />
                     )}
                   </HStack>
-                </VStack>
-              </Flex>
-            </VStack>
-            <VStack align="start" w="full">
-              <Heading fontSize="30px">Transparent pricing </Heading>
-              <VStack
-                bg="blue.50"
-                p="30px"
-                borderRadius="10px"
-                // w="870px"
-                w={{ base: "100%", md: "100%" }}
-              >
-                <Text>
-                  We think you should know how much your medications cost and
-                  why.
-                </Text>
-                <Text>
-                  A{" "}
-                  <strong>
-                    {quantity} count supply of {location.state.strengthName}{" "}
-                    {location.state.tabletName}
-                  </strong>{" "}
-                  will cost :
-                </Text>
-              </VStack>
-            </VStack>
-          </VStack>
-          <VStack align="start">
-            <Heading fontSize="23px" ms="10px">
-              Price Calculator
-            </Heading>
-            <VStack
-              flexWrap="wrap"
-              borderRadius="10px"
-              border="1px solid rgb(191, 204, 181)"
-              p="20px"
-              // w={["300px", "400px"]}
-              maxW={{ base: "100%", md: "400px" }}
-              w="full"
-              mx="50px"
-            >
-              <VStack gap={1} align="start">
-                <HStack align="baseline">
-                  <Text>{location.state?.fromName}</Text>
-                  <Text>•</Text>
-                  <Text>{location.state?.strengthName}</Text>
-                  <Text>•</Text>
-                  <Text>{quantity} count</Text>
-                </HStack>
-                <Heading>$ {price}</Heading>
-                <Text>Form</Text>
-                <RadioGroup
-                  options={fromOptions}
-                  name="from"
-                  onChange=""
-                  defaultValue={fromOptions[0]}
-                />
-                <Text>Strength</Text>
-                <RadioGroup
-                  options={strengthOptions}
-                  name="from"
-                  onChange=""
-                  defaultValue={strengthOptions[0]}
-                />
-                <Text>Quantity</Text>
-                <HStack gap={12}>
-                  {pricesArray !== "" && (
-                    <RadioGroup
-                      options={pricesArray.map((item) =>
-                        item.end_package_size.toString()
-                      )}
-                      name="Quantity"
-                      defaultValue={quantity}
-                      onChange={(value) => {
-                        setQuantity(value);
-                      }}
-                    />
-                  )}
-                </HStack>
-                {/* <HStack gap={2}>
-                  <RadioGroup
-                    options={pricesArray
-                      .filter(
-                        (value, index, array) =>
-                          array.findIndex(
-                            (item) =>
-                              item.units_included_in_base_price ===
-                              value.units_included_in_base_price
-                          ) === index
-                      )
-                      .map((item) =>
-                        item.units_included_in_base_price.toString()
-                      )}
-                    name="Quantity"
-                    defaultValue={pricesArray[0].units_included_in_base_price.toString()}
-                    onChange={(value) => {
-                      setQuantity(value);
-                    }}
-                  />
-                </HStack> */}
-                {/* <QuantitySlider quantity={quantity} setQuantity={setQuantity} minValue={minPackSize} maxValue={maxPackSize} /> */}
-                <HStack>
-                  {!otherInput && (
-                    <Button onClick={() => setOtherInput(true)}>others</Button>
-                  )}
-                  {otherInput && (
-                    <VStack>
-                      <InputGroup>
-                        <Input
-                          pr="4.5rem"
-                          type="text"
-                          placeholder={`From ${minPackSize} - ${maxPackSize}`}
-                          borderColor="#7fa8d4"
-                          w="300px"
-                          value={otherPackSizes}
-                          onChange={(e) => {
-                            setOtherPackSizes(e.target.value);
-                          }}
-                        />
-                        <InputRightElement width="3.5rem">
-                          <Box
-                            cursor="pointer"
-                            color="#7fa8d4"
-                            onClick={() => handleQuantityChange()}
-                          >
-                            Done
-                          </Box>
-                        </InputRightElement>
-                      </InputGroup>
+                  <HStack>
+                    {!otherInput && (
+                      <Button onClick={() => setOtherInput(true)}>
+                        others
+                      </Button>
+                    )}
+                    {otherInput && (
+                      <VStack>
+                        <InputGroup>
+                          <Input
+                            pr="4.5rem"
+                            type="text"
+                            placeholder={`From ${minPackSize} - ${maxPackSize}`}
+                            borderColor="#7fa8d4"
+                            w="100%"
+                            value={otherPackSizes}
+                            onChange={(e) => {
+                              setOtherPackSizes(e.target.value);
+                            }}
+                          />
+                          <InputRightElement width="3.5rem">
+                            <Box
+                              cursor="pointer"
+                              color="#7fa8d4"
+                              onClick={() => handleQuantityChange()}
+                            >
+                              Done
+                            </Box>
+                          </InputRightElement>
+                        </InputGroup>
 
-                      {alert && (
-                        <Alert status="error" color="red" borderRadius="7px">
-                          <AlertIcon />
-                          Package size must be between {minPackSize}-
-                          {maxPackSize}
-                        </Alert>
-                      )}
-                    </VStack>
-                  )}
-                </HStack>
-                <Button
-                  colorScheme="blue"
-                  rightIcon={<RiShoppingCartLine />}
-                  w="300px"
-                  mt="30px"
-                  textAlign={"left"}
-                  onClick={(e) => addCartItem(e)}
-                >
-                  Add to cart
-                </Button>
-              </VStack>
-            </VStack>
-            <Text color="gray.500" ms="10px">
-              *final prices shown at checkout
-            </Text>
-          </VStack>
-        </Flex>
-        <HStack spacing={8} width="100%" align="start" p="30px">
-          <Flex
-            justify="space-between"
-            borderRadius="3px"
-            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-            w="20%"
-            borderLeft="5px solid #17c5e1"
-          >
-            <VStack
-              align="center"
-              divider={
-                <StackDivider borderColor="gray.200" my="0px!important" />
-              }
-              w="100%"
-            >
-              {drugContents &&
-                Object.keys(drugContents).map((key, index) => (
-                  <Box
-                    _hover={{
-                      bg: "gray.400",
-                    }}
-                    bg={`${selectedKey === key ? "gray.400" : "none"}`}
+                        {alert && (
+                          <Alert status="error" color="red" borderRadius="7px">
+                            <AlertIcon />
+                            Package size must be between {minPackSize}-
+                            {maxPackSize}
+                          </Alert>
+                        )}
+                      </VStack>
+                    )}
+                  </HStack>
+                  <Button
+                    colorScheme="blue"
+                    rightIcon={<RiShoppingCartLine />}
                     w="100%"
-                    h="100%"
-                    p="20px"
-                    key={index}
-                    onClick={() => handleChangeContetnItem(key)}
+                    mt="30px"
+                    onClick={(e) => addCartItem(e)}
                   >
-                    <Text fontSize={22} m={0} cursor="pointer">
-                      {key.split("_").join(" ")}
-                    </Text>
-                  </Box>
-                ))}
+                    Add to cart
+                  </Button>
+                </VStack>
+              </VStack>
+              <Text color="gray.500" ms="10px">
+                *final prices shown at checkout
+              </Text>
             </VStack>
           </Flex>
-          <Flex
-            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-            p="20px"
-            flex={1}
-            minH="300px"
-            h="auto"
-            borderLeft="5px solid #17c5e1"
-          >
-            <Box>
-              <h2>{selectedKey.split("_").join(" ")}</h2>
-              <MarkdownPreview source={drugContents[selectedKey]} />
-            </Box>
-          </Flex>
-        </HStack>
+        )}
       </Box>
     </>
   );
