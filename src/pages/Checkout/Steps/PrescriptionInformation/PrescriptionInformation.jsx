@@ -46,7 +46,7 @@ export default function PrescriptionInformation() {
                 </label>
                 <label className="flex items-center mb-2 label-button">
                   <input type="radio" name={`prescription-method-${product.ndc}`} value="1" className="mr-3" />
-                  <p className='text-sm mt-3'>I am already a Honeybee patient and you have my Rx on file</p>
+                  <p className='text-sm mt-3'>I am already a Medmind patient and you have my Rx on file</p>
                 </label>
               </div>
             </div>

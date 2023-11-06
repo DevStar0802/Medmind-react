@@ -82,7 +82,7 @@ export default function NewPatientForm() {
               name="first-name"
               id="first-name"
               autoComplete="given-name"
-              className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              className="text-sm py-1 block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -97,11 +97,11 @@ export default function NewPatientForm() {
               name="last-name"
               id="last-name"
               autoComplete="family-name"
-              className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              className="text-sm py-1 block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
           </div>
         </div>
-        <label htmlFor="birthdate" className="block text-sm font-medium leading-6 text-black col-span-2 sm:mt-2 mt-2">
+        <label htmlFor="birthdate" className="block text-sm font-medium leading-6 text-black col-span-2 mt-1">
           Date of birth
         </label>
         <div className="col-span-4">
@@ -109,7 +109,7 @@ export default function NewPatientForm() {
             type="date"
             name="birthdate"
             id="birthdate"
-            className="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            className="text-sm py-1 block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
           />
         </div>
         <label className="text-base font-semibold text-gray-900 col-span-6 text-center">Gender</label>
