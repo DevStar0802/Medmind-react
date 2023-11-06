@@ -26,7 +26,7 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
     return (
       <HStack
         cursor="pointer"
-        onClick={() => handleNavigation("/checkout")}
+        onClick={() => handleNavigation("/cart")}
         position="relative"
       >
         <RiShoppingCartLine color="white" size="24px" />
