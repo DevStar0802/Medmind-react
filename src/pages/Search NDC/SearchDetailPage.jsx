@@ -11,15 +11,18 @@ import {
   Input,
   InputRightElement,
   Alert,
-  AlertIcon
+  AlertIcon,
+  StackDivider,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RadioGroup from "../radioGroup";
 import { FaPrescription } from "react-icons/fa";
 import { RiShoppingCartLine } from "react-icons/ri";
 import axios from "axios";
-import NavigationBar from '../../components/NavigationBar'
+import { MyContext } from "../../utilities/MyContext";
+import { getDrugContents } from "../../utils";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 
 export default function SearchDetailPage() {
   const navigate = useNavigate();
@@ -30,16 +33,16 @@ export default function SearchDetailPage() {
   const [otherInput, setOtherInput] = useState(false);
   const [alert, setAlert] = useState(false);
   const location = useLocation();
-  const fromOptions = [location.state.fromName];
-  const strengthOptions = [location.state.strengthName];
+  const fromOptions = [location.state?.fromName];
+  const strengthOptions = [location.state?.strengthName];
   const [pricesArray, setPricesArray] = useState("");
   const [minPackSize, setMinPackSize] = useState(null);
   const [maxPackSize, setMaxPackSize] = useState(null);
   const [cartItem, setCartItem] = useState(null);
-  const [cartItemCount, setCartItemCount] = useState(0);
 
+  const { cartItemCount, setCartItemCount } = useContext(MyContext);
   const setCartItemsInLocalStorage = () => {
-    let stringParsedItems = localStorage.getItem('cartItems');
+    let stringParsedItems = localStorage.getItem("cartItems");
 
     if (stringParsedItems === null) {
       stringParsedItems = "[]";
@@ -47,7 +50,7 @@ export default function SearchDetailPage() {
 
     let cartItems = JSON.parse(stringParsedItems);
 
-    if (typeof (cartItems) !== typeof ([])) {
+    if (typeof cartItems !== typeof []) {
       cartItems = [];
     }
 
@@ -58,7 +61,7 @@ export default function SearchDetailPage() {
     for (let i = 0; i < cartItems.length; i++) {
       if (cartItems[i].ndc === cartItem.ndc) {
         // If a matching item is found, update its quantity and price.
-        
+
         cartItems[i].quantity = parseInt(cartItems[i].quantity);
         cartItems[i].price = parseInt(cartItems[i].price);
         cartItems[i].quantity += parseInt(quantity);
@@ -76,7 +79,7 @@ export default function SearchDetailPage() {
     }
 
     const cartItemsString = JSON.stringify(cartItems);
-    localStorage.setItem('cartItems', cartItemsString);
+    localStorage.setItem("cartItems", cartItemsString);
 
     return isItemExists;
   };
@@ -111,8 +114,10 @@ export default function SearchDetailPage() {
           otherPackSizes >= item.start_package_size &&
           otherPackSizes <= item.end_package_size
         ) {
-          const packDifference = otherPackSizes - item.units_included_in_base_price;
-          let otherPrice = packDifference * item.additional_price_per_unit_after_base;
+          const packDifference =
+            otherPackSizes - item.units_included_in_base_price;
+          let otherPrice =
+            packDifference * item.additional_price_per_unit_after_base;
           let finalPrice = item.base_price + otherPrice;
           setPrice(finalPrice.toFixed(2));
         }
@@ -121,47 +126,98 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    axios.get(`https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`).then((res) => {
-      if (res.data.data.length > 0) {
-        console.log("res.data.data", res.data.data);
-        const objOfObjects = res.data.data.reduce((acc, cur) => {
-          const key = cur.ndc;
-          acc[key] = cur;
-
-          return acc;
-        }, {});
-
-        setPricesArray(objOfObjects[location.state.ndcName].prices);
-        setCartItem(objOfObjects[location.state.ndcName]);
+    if (pricesArray !== "") {
+      if (location.state.quantity) {
+        setQuantity(location.state.quantity);
+      } else {
+        setQuantity(pricesArray[0].end_package_size.toString());
       }
-    })
+    }
+  }, [location.state.quantity, pricesArray]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=${location.state.ndcName}`
+        // `https://us-central1-medmind-6f2a3.cloudfunctions.net/getProducts?ndc=0006-0106-54`
+      )
+      .then((res) => {
+        if (res.data.data.length > 0) {
+          console.log("res.data.data", res.data.data);
+          const objOfObjects = res.data.data.reduce((acc, cur) => {
+            const key = cur.ndc;
+            acc[key] = cur;
+
+            return acc;
+          }, {});
+
+          setPricesArray(objOfObjects[location.state.ndcName].prices);
+          setCartItem(objOfObjects[location.state.ndcName]);
+        }
+      });
   }, []);
 
   useEffect(() => {
-    if (pricesArray != "") {
+    if (pricesArray !== "") {
       const newMinPackSize = pricesArray[0].end_package_size;
-      const newMaxPackSize = pricesArray[pricesArray.length - 1].end_package_size;
+      const newMaxPackSize =
+        pricesArray[pricesArray.length - 1].end_package_size;
 
       setMinPackSize(newMinPackSize);
       setMaxPackSize(newMaxPackSize);
-      setQuantity(pricesArray[0].units_included_in_base_price.toString());
     }
   }, [pricesArray]);
 
   useEffect(() => {
-    if (pricesArray != "") {
+    if (pricesArray !== "") {
       pricesArray.map((item) => {
-        if (item.units_included_in_base_price.toString() === quantity) {
+        if (item.end_package_size.toString() === quantity) {
           setPrice(item.base_price);
         }
       });
     }
   }, [quantity]);
 
+  const [drugContents, setDrugContents] = useState({
+    Indications_and_Usage: "",
+    Contraindications: "",
+    Warnings: "",
+    Precautions: "",
+    Adverse_Reactions: "",
+    Overdosage: "",
+    Dosage_and_Administration: "",
+    How_Supplied: "",
+  });
+
+  const [selectedKey, setSelectedKey] = useState("");
+
+  const getDrugContents = async () => {
+    const res = await axios.get("http://65.108.24.122:1337/api/drugs");
+    console.log("Drug_________________!", res.data);
+    setDrugContents({
+      Indications_and_Usage: res.data.data[0].attributes.INDICATIONS_AND_USAGE,
+      Contraindications: res.data.data[0].attributes.CONTRAINDICATIONS,
+      Warnings: res.data.data[0].attributes.WARNINGS,
+      Precautions: res.data.data[0].attributes.PRECAUTIONS,
+      Adverse_Reactions: res.data.data[0].attributes.ADVERSE_REACTIONS,
+      Overdosage: res.data.data[0].attributes.OVERDOSAGE,
+      Dosage_and_Administration:
+        res.data.data[0].attributes.DOSAGE_AND_ADMINISTRATION,
+      How_Supplied: res.data.data[0].attributes.HOW_SUPPLIED,
+    });
+    setSelectedKey("Indications_and_Usage");
+  };
+
+  useEffect(() => {
+    getDrugContents();
+  }, []);
+
+  const handleChangeContetnItem = (key) => {
+    setSelectedKey(key);
+  };
+
   return (
     <>
-      <NavigationBar cartItemCount={cartItemCount} setCartItemCount={setCartItemCount} />
-
       <Box>
         <HStack
           justify="end"
@@ -196,7 +252,9 @@ export default function SearchDetailPage() {
             p={{ base: "2", md: "4" }}
           >
             <VStack align="start">
-              <Heading>{location.state.genericName} ({location.state.tabletName})</Heading>
+              <Heading>
+                {location.state.genericName} ({location.state.tabletName})
+              </Heading>
               <Flex
                 gap={5}
                 align="start"
@@ -213,7 +271,6 @@ export default function SearchDetailPage() {
                 />
 
                 <VStack align="flex-start" ml="2" spacing={"6"}>
-
                   <HStack
                     // gap={1}
 
@@ -231,7 +288,9 @@ export default function SearchDetailPage() {
                       color="rgb(20, 66, 114)"
                     />
                     <Text fontWeight="bold" color="rgb(20, 66, 114)">
-                      {location.state.requiresPrescription ? "Prescription Required" : "Human OTC product"}
+                      {location.state.requiresPrescription
+                        ? "Prescription Required"
+                        : "Human OTC product"}
                     </Text>
                   </HStack>
 
@@ -251,10 +310,11 @@ export default function SearchDetailPage() {
                     w="90%"
                     maxW="600px"
                   >
-                    {
-                      location.state.requiresPrescription && <Text pt="10px" fontWeight="bold" color="blue.700">
+                    {location.state.requiresPrescription && (
+                      <Text pt="10px" fontWeight="bold" color="blue.700">
                         Contact your doctor for prescription
-                      </Text>}
+                      </Text>
+                    )}
                   </HStack>
                 </VStack>
               </Flex>
@@ -299,9 +359,9 @@ export default function SearchDetailPage() {
             >
               <VStack gap={1} align="start">
                 <HStack align="baseline">
-                  <Text>{location.state.fromName}</Text>
+                  <Text>{location.state?.fromName}</Text>
                   <Text>•</Text>
-                  <Text>{location.state.strengthName}</Text>
+                  <Text>{location.state?.strengthName}</Text>
                   <Text>•</Text>
                   <Text>{quantity} count</Text>
                 </HStack>
@@ -322,16 +382,18 @@ export default function SearchDetailPage() {
                 />
                 <Text>Quantity</Text>
                 <HStack gap={12}>
-                  {pricesArray != "" && <RadioGroup
-                    options={pricesArray.map((item) =>
-                      item.end_package_size.toString()
-                    )}
-                    name="Quantity"
-                    defaultValue={pricesArray[0].end_package_size.toString()}
-                    onChange={(value) => {
-                      setQuantity(value);
-                    }}
-                  />}
+                  {pricesArray !== "" && (
+                    <RadioGroup
+                      options={pricesArray.map((item) =>
+                        item.end_package_size.toString()
+                      )}
+                      name="Quantity"
+                      defaultValue={quantity}
+                      onChange={(value) => {
+                        setQuantity(value);
+                      }}
+                    />
+                  )}
                 </HStack>
                 {/* <HStack gap={2}>
                   <RadioGroup
@@ -367,7 +429,7 @@ export default function SearchDetailPage() {
                           type="text"
                           placeholder={`From ${minPackSize} - ${maxPackSize}`}
                           borderColor="#7fa8d4"
-                          w='300px'
+                          w="300px"
                           value={otherPackSizes}
                           onChange={(e) => {
                             setOtherPackSizes(e.target.value);
@@ -394,12 +456,14 @@ export default function SearchDetailPage() {
                     </VStack>
                   )}
                 </HStack>
-                <Button colorScheme='blue'
+                <Button
+                  colorScheme="blue"
                   rightIcon={<RiShoppingCartLine />}
-                  w='300px'
-                  mt='30px'
+                  w="300px"
+                  mt="30px"
                   textAlign={"left"}
-                  onClick={e => addCartItem(e)}>
+                  onClick={(e) => addCartItem(e)}
+                >
                   Add to cart
                 </Button>
               </VStack>
@@ -409,7 +473,56 @@ export default function SearchDetailPage() {
             </Text>
           </VStack>
         </Flex>
+        <HStack spacing={8} width="100%" align="start" p="30px">
+          <Flex
+            justify="space-between"
+            borderRadius="3px"
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            w="20%"
+            borderLeft="5px solid #17c5e1"
+          >
+            <VStack
+              align="center"
+              divider={
+                <StackDivider borderColor="gray.200" my="0px!important" />
+              }
+              w="100%"
+            >
+              {drugContents &&
+                Object.keys(drugContents).map((key, index) => (
+                  <Box
+                    _hover={{
+                      bg: "gray.400",
+                    }}
+                    bg={`${selectedKey === key ? "gray.400" : "none"}`}
+                    w="100%"
+                    h="100%"
+                    p="20px"
+                    key={index}
+                    onClick={() => handleChangeContetnItem(key)}
+                  >
+                    <Text fontSize={22} m={0} cursor="pointer">
+                      {key.split("_").join(" ")}
+                    </Text>
+                  </Box>
+                ))}
+            </VStack>
+          </Flex>
+          <Flex
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            p="20px"
+            flex={1}
+            minH="300px"
+            h="auto"
+            borderLeft="5px solid #17c5e1"
+          >
+            <Box>
+              <h2>{selectedKey.split("_").join(" ")}</h2>
+              <MarkdownPreview source={drugContents[selectedKey]} />
+            </Box>
+          </Flex>
+        </HStack>
       </Box>
     </>
   );
-};
+}

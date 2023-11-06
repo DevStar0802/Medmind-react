@@ -15,13 +15,9 @@ import {
   VStack,
   resolveStyleConfig,
 } from "@chakra-ui/react";
-import NavigationBar from '../../components/NavigationBar'
-
-
 
 function combineLists(lists) {
-  if (lists == null || lists == undefined)
-    return;
+  if (lists == null || lists == undefined) return;
   let combinedArray = [];
   for (let i = 0; i < lists.length; i++) {
     combinedArray = combinedArray.concat(lists[i]);
@@ -30,17 +26,14 @@ function combineLists(lists) {
 }
 
 function combineListsOfLists(results) {
-  if (results == null || results == undefined)
-    return;
+  if (results == null || results == undefined) return;
   const values = Object.values(results);
-  if (values == undefined)
-    return;
+  if (values == undefined) return;
   const combinedList = combineLists(values);
   let combinedArray = [];
   for (let i = 0; i < combinedList.length; i++) {
     const newItem = combinedList[i * 2 + 1];
-    if (newItem != undefined)
-      combinedArray = combinedArray.concat(newItem);
+    if (newItem != undefined) combinedArray = combinedArray.concat(newItem);
   }
 
   return combinedArray;
@@ -48,14 +41,12 @@ function combineListsOfLists(results) {
 
 function countValues(obj) {
   const result = {};
-  if (obj == null || obj == undefined)
-    return;
+  if (obj == null || obj == undefined) return;
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       if (Array.isArray(obj[key])) {
         const values = Object.values(obj[key]);
-        if (obj[key] == null || obj[key] == undefined)
-          continue;
+        if (obj[key] == null || obj[key] == undefined) continue;
 
         const combinedList = combineLists(values);
         result[key] = [obj[key].length, combinedList];
@@ -76,12 +67,10 @@ const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const navigate = useNavigate();
-  const [cartItemCount, setCartItemCount] = useState(0);
 
   const getresults = async (searchData) => {
     // setInputValue(searchData);
-    if (searchData == null || searchData == undefined)
-      return;
+    if (searchData == null || searchData == undefined) return;
 
     if (searchData.length > 2) {
       try {
@@ -90,8 +79,8 @@ const SearchPage = () => {
           .get(`https://api.medmind.io/api/search_honeybee?query=${searchData}`)
           .then((res) => {
             const result = countValues(res.data.body);
-            setResults(result)
-          })
+            setResults(result);
+          });
 
         // axios
         //   .get(`api.medmind.io/search?query=${searchData}`)
@@ -110,11 +99,16 @@ const SearchPage = () => {
       setMatchNdc(searchData);
       setLoading("true");
       await axios
-        .get(
-          `https://api.medmind.io/api/search_honeybee?query=${searchData}`
-        )
+        .get(`https://api.medmind.io/api/search_honeybee?query=${searchData}`)
         .then((res) => {
-          if (res == null || res == undefined || res.data == null || res.data == undefined || res.data.body == undefined || res.data.body == null)
+          if (
+            res == null ||
+            res == undefined ||
+            res.data == null ||
+            res.data == undefined ||
+            res.data.body == undefined ||
+            res.data.body == null
+          )
             return;
 
           if (res.data.body && Object.keys(res.data.body).length > 0) {
@@ -149,8 +143,7 @@ const SearchPage = () => {
 
   const handleInputChange = (event) => {
     const inputValue = event.target.value;
-    if (inputValue === null || inputValue === undefined)
-      return;
+    if (inputValue === null || inputValue === undefined) return;
     setInputValue(inputValue);
     if (inputValue.length > 2) {
       getresults(inputValue);
@@ -164,7 +157,12 @@ const SearchPage = () => {
     <>
       <VStack mt="10px">
         <Heading textAlign="center">Search </Heading>
-        <Form onSubmit={(event) => handleSubmitFromSearch(event, combineListsOfLists(results))} style={{ position: "relative" }}>
+        <Form
+          onSubmit={(event) =>
+            handleSubmitFromSearch(event, combineListsOfLists(results))
+          }
+          style={{ position: "relative" }}
+        >
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Tooltip label="Enter your Query" placement="auto-start">
               <Form.Control
@@ -175,39 +173,41 @@ const SearchPage = () => {
                 style={{ width: "300px" }}
               />
             </Tooltip>
-            {results && Object.keys(results) && Object.keys(results).length > 0 && (
-              <>
-                <Box
-                  position="absolute"
-                  bg="white"
-                  zIndex="999"
-                  p="3"
-                  boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
-                  borderRadius="5px"
-                  maxH="600px"
-                  overflowY="scroll"
-                >
-                  {Object.keys(results).map((result, index) => (
-                    <Box
-                      borderBottom="1px solid #dadada"
-                      key={index}
-                      align="start"
-                      gap={3}
-                      px="5px"
-                      cursor="pointer"
-                      onClick={(event) => {
-                        handleSubmitFromSearch(event, results[result][1]);
-                      }}
-                    >
-                      <Text style={{ fontWeight: "600" }} margin="1px">
-                        {result}
-                      </Text>
-                      <Text margin="1px">{results[result][0]} choices</Text>
-                    </Box>
-                  ))}
-                </Box>
-              </>
-            )}
+            {results &&
+              Object.keys(results) &&
+              Object.keys(results).length > 0 && (
+                <>
+                  <Box
+                    position="absolute"
+                    bg="white"
+                    zIndex="999"
+                    p="3"
+                    boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+                    borderRadius="5px"
+                    maxH="600px"
+                    overflowY="scroll"
+                  >
+                    {Object.keys(results).map((result, index) => (
+                      <Box
+                        borderBottom="1px solid #dadada"
+                        key={index}
+                        align="start"
+                        gap={3}
+                        px="5px"
+                        cursor="pointer"
+                        onClick={(event) => {
+                          handleSubmitFromSearch(event, results[result][1]);
+                        }}
+                      >
+                        <Text style={{ fontWeight: "600" }} margin="1px">
+                          {result}
+                        </Text>
+                        <Text margin="1px">{results[result][0]} choices</Text>
+                      </Box>
+                    ))}
+                  </Box>
+                </>
+              )}
           </Form.Group>
           <div className="d-flex justify-content-center align-items-center">
             {loading === "true" ? (
@@ -221,7 +221,7 @@ const SearchPage = () => {
                 type="submit"
                 loading={loading}
                 color="green"
-              // disabled={loading.toString()}
+                // disabled={loading.toString()}
               >
                 Search
               </Button>
@@ -252,7 +252,7 @@ const SearchPage = () => {
                             genericName: item.generic_name,
                             strengthName: item.strength,
                             imageName: item.image_url,
-                            requiresPrescription: item.requires_prescription
+                            requiresPrescription: item.requires_prescription,
                           },
                         });
                       }}

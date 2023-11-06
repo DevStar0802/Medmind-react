@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "../pages/MainPage";
 import SearchPage from "../pages/Search NDC/SearchPage";
@@ -8,11 +8,18 @@ import Login from "../pages/Login/index.jsx";
 import SignUp from "../pages/SignUp/index.jsx";
 import Cart from "../pages/Cart/index.jsx";
 import Checkout from "../pages/Checkout/index.jsx";
-import NavgiationBar from "../components/NavigationBar";
+import NavigationBar from "../components/NavigationBar";
+import { MyContext } from "../utilities/MyContext";
 
 const PrivateRoutes = () => {
+  const { cartItemCount, setCartItemCount } = useContext(MyContext);
   return (
     <>
+      <NavigationBar
+        cartItemCount={cartItemCount}
+        setCartItemCount={setCartItemCount}
+      />
+
       <Routes>
         <Route path="/*" element={<MainPage />} />
         <Route path="/searchPage" element={<SearchPage />} />
