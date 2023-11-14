@@ -67,7 +67,6 @@ const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const navigate = useNavigate();
-  const [cartItemCount, setCartItemCount] = useState(0);
 
   const getresults = async (searchData) => {
     // setInputValue(searchData);
