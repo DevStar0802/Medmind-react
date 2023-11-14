@@ -187,7 +187,7 @@ export default function SearchDetailPage() {
 
   const getDrugContents = async () => {
     const res = await axios.get(
-      "http://3.93.200.27:1337/api/drugs?filters[NDC][$startsWith]=50090-0481"
+      `http://3.93.200.27:1337/api/drugs?filters[NDC][$startsWith]=${ndc}`
     );
     console.log("Drug_________________!", res.data);
     setDrugContents({
@@ -205,7 +205,7 @@ export default function SearchDetailPage() {
   };
 
   useEffect(() => {
-    // getDrugContents();
+    getDrugContents();
     console.log(quantity, quantity.toString());
   }, [quantity]);
 
@@ -233,7 +233,7 @@ export default function SearchDetailPage() {
             Back
           </Button>
         </HStack>
-        {cartItem && (
+        {cartItem ? (
           <Flex
             m="30px"
             p="20px"
@@ -440,7 +440,67 @@ export default function SearchDetailPage() {
               </Text>
             </VStack>
           </Flex>
+        ) : (
+          <Text
+            fontSize={60}
+            textAlign={"center"}
+            alignSelf={"center"}
+            justifySelf={"center"}
+            mt={"20px"}
+          >
+            There is no drug for this NDC
+          </Text>
         )}
+
+        <HStack spacing={8} width="100%" align="start" p="30px">
+          <Flex
+            justify="space-between"
+            borderRadius="3px"
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            w="20%"
+            borderLeft="5px solid #17c5e1"
+          >
+            <VStack
+              align="center"
+              divider={
+                <StackDivider borderColor="gray.200" my="0px!important" />
+              }
+              w="100%"
+            >
+              {drugContents &&
+                Object.keys(drugContents).map((key, index) => (
+                  <Box
+                    _hover={{
+                      bg: "gray.400",
+                    }}
+                    bg={`${selectedKey === key ? "gray.400" : "none"}`}
+                    w="100%"
+                    h="100%"
+                    p="20px"
+                    key={index}
+                    onClick={() => handleChangeContentItem(key)}
+                  >
+                    <Text fontSize={22} m={0} cursor="pointer">
+                      {key.split("_").join(" ")}
+                    </Text>
+                  </Box>
+                ))}
+            </VStack>
+          </Flex>
+          <Flex
+            boxShadow="0 3px 10px rgb(0 0 0 / 0.2)"
+            p="20px"
+            flex={1}
+            minH="300px"
+            h="auto"
+            borderLeft="5px solid #17c5e1"
+          >
+            <Box>
+              <h2>{selectedKey.split("_").join(" ")}</h2>
+              <MarkdownPreview source={drugContents[selectedKey]} />
+            </Box>
+          </Flex>
+        </HStack>
       </Box>
     </>
   );
