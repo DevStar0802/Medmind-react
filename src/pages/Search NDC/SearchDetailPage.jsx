@@ -189,7 +189,6 @@ export default function SearchDetailPage() {
     const res = await axios.get(
       `http://3.93.200.27:1337/api/drugs?filters[NDC]=${ndc}`
     );
-    console.log("Drug_________________!", res.data);
     setDrugContents({
       Indications_and_Usage: res.data.data[0].attributes.INDICATIONS_AND_USAGE,
       Contraindications: res.data.data[0].attributes.CONTRAINDICATIONS,
