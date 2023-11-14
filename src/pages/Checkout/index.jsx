@@ -11,10 +11,10 @@ import ShippingAddress from './Steps/ShippingAddress/ShippingAddress';
 import { MyContext } from "../../utilities/MyContext";
 import { BsFillArrowLeftSquareFill } from "react-icons/bs";
 import { RiShoppingCartLine } from "react-icons/ri";
+import { notify } from '../../utilities/Notification';
+import { isTokenValid } from '../../utilities/jwt_utilities';
+import { useNavigate } from 'react-router-dom';
 
-import { isTokenValid } from "../../utilities/jwt_utilities";
-import { useNavigate } from "react-router-dom";
-import { notify } from "../../utilities/Notification";
 
 export default function Checkout() {
   const [products, setProducts] = useState([]);
