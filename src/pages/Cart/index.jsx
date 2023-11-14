@@ -1,25 +1,20 @@
-import CheckoutSteps from './CheckoutSteps';
-import Products from './Products';
-import CheckoutForm from './CheckoutForm';
 import { getLocalStorageItem } from '../../utils'
-import { useState, useEffect } from "react";
-import PatientInfo from './Steps/PatientInformation/MainForm';
-import HealthInformation from './Steps/HealthInformation/HealthInformation';
-import PrescriptionInformation from './Steps/PrescriptionInformation/PrescriptionInformation';
-import Payment from './Steps/Payment/Payment';
-import ShippingAddress from './Steps/ShippingAddress/ShippingAddress';
-
+import { RiShoppingCartLine } from 'react-icons/ri';
+import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
+import { useState, useEffect, useContext } from "react";
+import { MyContext } from "../../utilities/MyContext";
+import { isTokenValid } from "../../utilities/jwt_utilities";
+import { useNavigate } from "react-router-dom";
+import { notify } from "../../utilities/Notification";
 
 export default function Checkout() {
   const [products, setProducts] = useState([]);
-  const [pages, setPages] = useState([
-    { name: 'Patient Info', stepNumber: 1, href: '#', current: true, component: <PatientInfo /> },
-    { name: 'Health Info', stepNumber: 2, href: '#', current: false, component: <HealthInformation /> },
-    { name: 'Prescription Information', stepNumber: 3, href: '#', current: false, component: <PrescriptionInformation products={products} setProducts={setProducts}/> },
-    { name: 'Shipping Information', stepNumber: 4, href: '#', current: false, component: <ShippingAddress/> },
-    { name: 'Payment Information', stepNumber: 5, href: '#', current: false, component: <Payment/> },
-  ])
-
+  const [subTotal, setSubtotal] = useState(0);
+  const [service, setService] = useState(8);
+  const [shipping, setShipping] = useState(14);
+  const { cartItemCount, setCartItemCount } = useContext(MyContext);
+  const navigate = useNavigate();
+  
   useEffect(() => {
     let cartItems = getLocalStorageItem("cartItems");
     if (
@@ -45,6 +40,8 @@ export default function Checkout() {
       if (!isValidToken) {
         notify("warning", "You are not signed in!");
         navigate("/login");
+      } else {
+        navigate("/checkout");
       }
     } catch (exception) {
       console.log("Error", exception);
@@ -241,5 +238,5 @@ export default function Checkout() {
         </div>
       </main>
     </div>
-  </>
+  );
 }

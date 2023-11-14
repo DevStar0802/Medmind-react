@@ -87,7 +87,7 @@ export default function SearchDetailPage() {
     event.preventDefault();
     const isItemsExist = setCartItemsInLocalStorage();
     setCartItemCount(isItemsExist ? cartItemCount : cartItemCount + 1);
-    navigate("/checkout");
+    navigate("/cart");
   };
 
   const handleQuantityChange = () => {

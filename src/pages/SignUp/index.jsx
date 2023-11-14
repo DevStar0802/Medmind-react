@@ -21,7 +21,6 @@ import { isTokenValid } from "../../utilities/jwt_utilities";
 export default function SignUp() {
   const [signedUp, setSignedUp] = useState(false);
   const [isVisible, setIsVisible] = useState(true); // Add this state
-  const [cartItemCount, setCartItemCount] = useState(0);
 
   const navigate = useNavigate(); // Get the navigate function from the hook
 
