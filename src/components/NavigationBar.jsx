@@ -157,7 +157,7 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
             "&:active": { color: "none" },
           }}
         >
-          MEDMIND
+          MEDMIND TESTING
         </NavLink>
 
         <HStack spacing={5} display={{ base: "none", md: "flex" }}>
