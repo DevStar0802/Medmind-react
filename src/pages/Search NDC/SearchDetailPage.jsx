@@ -187,7 +187,7 @@ export default function SearchDetailPage() {
 
   const getDrugContents = async () => {
     const res = await axios.get(
-      `http://3.93.200.27:1337/api/drugs?filters[NDC]=${ndc}`
+      `https://3.93.200.27:1337/api/drugs?filters[NDC]=${ndc}`
     );
     setDrugContents({
       Indications_and_Usage: res.data.data[0].attributes.INDICATIONS_AND_USAGE,
