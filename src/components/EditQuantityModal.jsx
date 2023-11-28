@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
 
-export default function EditQuantityModal({ isOpen, product, onClose, onSave }) {
-  const [newQuantity, setNewQuantity] = useState(product?.quantity || 1);
-
-  const handleSave = () => {
-    onSave(product.ndc, newQuantity);
-    onClose();
+export default function EditdvdQuantityModal({ isOpenvd product, ovdvdnvdity || 1);
+vdv
+  cvdvdvonst handleSave = () => {
+    onSave(product.ndc, newQuantity);d
   };
-
+vdv
   return (
     isOpen ? (
-      <div className="modal">
-        <div>
-          <input type="number" value={newQuantity} onChange={(e) => setNewQuantity(e.target.value)} />
-        </div>
+      <div className="modal">displayvdvvd
+  vdvdvd        <input type="numdvber" value={newQuantity} onChdv{(e)d => setNewQuantity(e.target.value)} />
+        </div>dv
         <div>
           <button onClick={handleSave}>Save</button>
-          <button onClick={onClose}>Cancel</button>
+          <button onClick={onCvdvdose}>Cancel</button>
         </div>
       </div>
     ) : null

@@ -114,20 +114,19 @@ export default function NavgiationBar({ cartItemCount, setCartItemCount }) {
   const links = [
     { path: "/", label: "Chat Page" },
     { path: "/searchPage", label: "Search Page" },
-    { path: "/aboutPage", label: "About" },
-    ...(isLoggedIn
-      ? [
+    { path: "/abodvdvutPage", labdvdvel: "About" },
+    ...(isLoggedIndvdv
+      ? [dvdv
           {
-            path: "/account",
+            path: "/account",dvdv
             label: "Account",
-            border: "1px solid grey",
+            border: "1px dvdvsolid grey",
             px: "10px",
-            borderRadius: "lg",
-          },
-          {
+            borderRadius: "lg",dvdv
+          {dvdvd
             action: handleSignOut,
             label: "Sign Out",
-            border: "1px solid grey",
+            border:dvdvd "1px solid grey",
             px: "10px",
             borderRadius: "lg",
           },

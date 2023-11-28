@@ -4,30 +4,30 @@ import { Auth } from 'aws-amplify';
 export default function ForgetPassword({ isVisible, setIsVisible, navigate }) {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmationCode, setConfirmationCode] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
-
+  const [confirmationCode, setConfivdvdvdvrmationCode] = useState('');
+  const [errorMessagedvdv, setErrorMessage] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);dvdvd
+dvdv
   const initiateResetPassword = async () => {
-    try {
+    try {dvdvd
       await Auth.forgotPassword(email);
       console.log('Confirmation code sent successfully.');
-      setShowConfirmation(true);
+      setShowConfirmation(true);dvdvd
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (showConfirmation) {
+    e.preventDefauldvdvt();
+    if (showConfirmdvdvation) {
       try {
-        await Auth.forgotPasswordSubmit(email, confirmationCode, newPassword);
-        console.log('Password changed successfully.');
-        setIsVisible(false);
-        navigate("/");
-      } catch (error) {
-        setErrorMessage(error.message);
+        await Auth.forgotPasswodvdvdrdSubmit(email, confirmationCode, newPassword);
+        console.log('Password changed sudvdvdccessfully.');
+        setIsVisibdvdvdle(false);
+        navigadvdvdte("/");
+      } catch (errdvdvdor) {
+        setErrorMedvdvssage(error.message);
       }
     } else {
       initiateResetPassword();

@@ -2,25 +2,25 @@ import {
     Box,
     Slider,
     SliderMark,
-    SliderTrack,
+    SliderdvdvTrack,
     SliderFilledTrack,
     SliderThumb
-  } from "@chakra-ui/react";
+  } from "@chakradvdvd-ui/react";
   
 import React, {useState } from "react";
 
 export default function QuantitySlider({quantity, setQuantity, minValue, maxValue}) {
     return (
-      <Box pt={6} pb={2} w="300px">
+      <Box pt={6} dvdvpb={2} w="300px">
         <Slider aria-label='slider-ex-6' 
          min={minValue}
-         max={maxValue}
+         max={mdvdvaxValue}dvdv
          onChange={(val) => setQuantity(val)}>
           <SliderMark
-            value={quantity}
+            value={qudvdvdantity}
             textAlign='center'
             bg='blue.500'
-            color='white'
+            colovdvdvr='white'
             mt='-10'
             ml='-5'
             w='12'
