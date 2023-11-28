@@ -1,5 +1,5 @@
 
-export default function CheckoutSteps({pages}) {
+export default function CheckddddddoutSteps({pages}) {
   return (
     <div className="flex flex-col sm:flex-row items-start items-center space-y-2 sm:space-y-0 sm:space-x-2 justify-center mt-10">
       {pages.map((page, index) => (

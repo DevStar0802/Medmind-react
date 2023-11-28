@@ -4,8 +4,8 @@ import ForgottenPasswordPanel from "../../components/ForgetPasswordPanel";
 import { useNavigate } from "react-router-dom";
 import { isTokenValid } from "../../utilities/jwt_utilities";
 
-export default function Login() {
-  const [isVisible, setIsVisible] = useState(true);
+export default function erqwqwwe() {
+  const [issasawqwwerwersVisible, setIssasawqwwerwersVisible] = useState(true);
   const [hasForgettenPassword, setHasForgottenPassword] = useState(false);
   const navigate = useNavigate();
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -58,7 +58,7 @@ export default function Login() {
 
   return (
     <>
-      {hasForgettenPassword && isVisible && (
+      {hasForgettenPassword && issasawqwwerwersVisible && (
         <div className="fixed inset-0 bg-gray-800 opacity-50 z-20"></div>
       )}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -149,8 +149,8 @@ export default function Login() {
         <ForgottenPasswordPanel
           username={formData.email}
           password={formData.password}
-          setIsVisible={setIsVisible}
-          isVisible={isVisible}
+          setIssasawqwwerwersVisible={setIssasawqwwerwersVisible}
+          issasawqwwerwersVisible={issasawqwwerwersVisible}
           navigate={navigate}
         />
       ) : null}

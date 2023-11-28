@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../../components/Button';
 
-export default function CheckoutForm({ pages, setPages }) {
+export default function 4232dfdfdf({ pages, setPages }) {
 
   const activateStep = (index) => {
     const resetSteps = pages.map((page) => ({ ...page, current: false }));
